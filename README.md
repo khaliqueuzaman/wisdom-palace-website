@@ -1,48 +1,66 @@
-# Wisdom Palace — B2B mobile wholesale website
+# Wisdom Palace — B2B Mobile Wholesale Website
 
-Live site: **[wisdompalace.ae](https://wisdompalace.ae)**
+> Live website for **Wisdom Palace**, a Dubai wholesaler of Apple, Samsung and Xiaomi phones and smartwatches.
+> Designed and built by **[khaliqueuzaman](https://github.com/khaliqueuzaman)** · 2026
 
-Website for Wisdom Palace, a Dubai wholesaler of Apple, Samsung and Xiaomi phones and smartwatches (Naif Road, Deira, since 2015). Trade buyers browse the range, build an order by model, storage, colour, regional spec and quantity, and send it to the sales team by email or WhatsApp.
+**▶ Live site:** https://wisdompalace.ae
 
-![Home page](docs/home.jpg)
+![Homepage](docs/home.jpg)
 
-## Highlights
+---
 
-- **Order builder and quote list**: pick model, storage, colour swatch, regional spec and quantity on any product page; lines collect in a quote drawer and go to the sales team in one enquiry.
-- **Three-step enquiry form**: order, delivery (country, city or port, currency), contact details. Validated server-side, rate-limited, honeypot spam trap.
-- **Official specifications**: every phone and watch carries the manufacturer's spec sheet (Apple Support, Samsung Newsroom, mi.com), with per-model tabs.
-- **Email that lands in the inbox**: enquiries are sent through the Hostinger Mail API, so they are signed as the business mailbox. The API key lives in a config file outside the web root, never in this repository.
-- **WhatsApp everywhere**: floating button and pre-filled order messages.
-- **Fast and accessible**: static HTML, self-hosted variable font, WebP product photos, keyboard-friendly tabs and drawers, reduced-motion support.
-- **SEO and legal**: sitemap, structured data, robots rules, terms of business, privacy and cookie policies.
+## The brief
 
-| Product page and order builder | Official specs | Mobile |
-|---|---|---|
-| ![Order builder](docs/product.jpg) | ![Specifications](docs/specs.jpg) | ![Mobile](docs/mobile.jpg) |
+Wisdom Palace (Naif Road, Deira, since 2015) sells new phones and watches in bulk to retailers, resellers and distributors in the UAE, the GCC, the UK and Europe. The goal was an enquiry-driven B2B website, not a retail shop, that:
 
-![Enquiry form](docs/contact.jpg)
+- presents the full Apple, Samsung and Xiaomi range professionally, with **no public prices**
+- lets a buyer **build an order** (model, storage, colour, regional spec, quantity) instead of typing it out
+- turns visitors into **wholesale quotation requests** and WhatsApp conversations
+- feels like a premium, Apple-style brand: calm, fast and easy to read
 
-## Tech stack
+## My role
 
-- [Astro](https://astro.build) static site, TypeScript, plain CSS with design tokens
-- Manrope Variable via `@fontsource-variable/manrope`
-- PHP endpoint (`public/api/enquiry.php`) for enquiries, Hostinger Mail API
-- Hosted on Hostinger with CDN and SSL
+End-to-end: brand direction, design system, information architecture, UX copy, front-end build, enquiry back end, hosting, domain, business email and launch.
 
-## Project structure
+## What I built
+
+| Area | Details |
+|---|---|
+| **Design system** | Emerald and off-white palette with orange only for primary actions, Manrope variable type scale, design tokens, colour swatches for every model |
+| **Catalogue** | 40+ product series: iPhone 13 to 18 Pro and iPhone Duo, Galaxy S23 to S26 FE, A57, Z Fold and Z Flip, Xiaomi 14 to 18, Apple Watch, Galaxy Watch, Xiaomi and Redmi watches |
+| **Order builder** | Pick model, storage or case size, colour, regional spec and quantity; lines collect in a quote drawer and go to sales in one enquiry |
+| **Official specs** | Manufacturer spec sheets for every model (Apple Support, Samsung Newsroom, mi.com), aligned in tabs per model |
+| **Enquiry back end** | Three-step form (order, delivery, details) with server-side validation, rate limiting and a spam trap; sent through the Hostinger Mail API so it lands in the inbox |
+| **SEO** | Clean URLs, sitemap, structured data, robots rules, Google Business Profile updated to match |
+| **Legal** | Terms of business, privacy policy and cookie policy with consent banner |
+| **Responsive** | Mobile-first layouts tested at 390px, tablet and 1440px |
+
+## Screenshots
+
+| Order builder | Official specifications |
+|---|---|
+| ![Order builder](docs/product.jpg) | ![Specifications](docs/specs.jpg) |
+| **Enquiry form** | **Mobile** |
+| ![Enquiry form](docs/contact.jpg) | <img src="docs/mobile.jpg" width="260"> |
+
+## Tech
+
+- [Astro](https://astro.build) static site, TypeScript, plain CSS with design tokens (no UI framework)
+- Self-hosted Manrope Variable font, WebP product photos, lazy loading
+- PHP enquiry endpoint (`public/api/enquiry.php`) using the Hostinger Mail API; the API key is stored on the server outside the web root and is not in this repository
+- Hosted on **Hostinger** with CDN and SSL; business email on Hostinger Mail
+
+## Repository contents
 
 ```
-src/
-  pages/        Home, brand and product pages, markets, contact, legal pages
-  components/   Header, order builder, quote drawer, specs, swatches, cards
-  data/         catalog.ts (models, storage, colours), specs.json, content.ts
-  lib/          site details, quote list logic
-  styles/       global.css (design tokens at the top)
-public/
-  api/          enquiry.php
-  images/       product photos (WebP)
-scripts/
-  sitemap.py    writes dist/sitemap.xml after a build
+src/pages/        Home, brand and product pages, markets, contact, legal pages
+src/components/   Header, order builder, quote drawer, specs, swatches, cards
+src/data/         Catalogue, specifications, site content
+src/styles/       Design tokens and styles
+public/api/       Enquiry endpoint
+public/images/    Product photos (WebP)
+scripts/          Sitemap generator
+docs/             Screenshots
 ```
 
 ## Run locally
@@ -51,23 +69,8 @@ scripts/
 npm install
 npm run dev        # http://localhost:4321
 npm run build      # production build into dist/
-python3 scripts/sitemap.py dist https://wisdompalace.ae
 ```
 
-`PREVIEW=1` builds one `.html` file per page with the enquiry form in demonstration mode (nothing is sent), used for design reviews.
+## Note
 
-## Configuration
-
-The enquiry endpoint reads `wp-config/enquiry.php` from the domain folder, **outside** `public_html`:
-
-```php
-<?php return ['mail_api_token' => '…', 'mailbox_id' => 'AC…'];
-```
-
-Without it, the endpoint falls back to the server's mail transport.
-
-## Credits
-
-Product photos and specifications belong to Apple, Samsung and Xiaomi and are shown to identify the products sold. Brand names are trademarks of their owners.
-
-Code and design © Wisdom Palace. All rights reserved.
+This repository is a **portfolio showcase**. No credentials or hosting secrets are included. "Wisdom Palace" belongs to the client; product names, photos and specifications belong to their manufacturers. The design and code are shared for viewing only — see [LICENSE](LICENSE).
