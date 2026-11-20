@@ -1,0 +1,20 @@
+---
+interface Props { name: 'check' | 'clock' | 'info' | 'alert' | 'mail' | 'pin' | 'search' | 'plus' | 'chev' | 'wa' | 'mark'; class?: string }
+const { name, class: cls } = Astro.props;
+const P: Record<string, string> = {
+  check: '<path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+  clock: '<circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 6v4.2l2.8 1.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>',
+  info: '<circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 9v5M10 6.2v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  alert: '<path d="M10 3l7.5 13h-15L10 3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M10 8v3.5M10 13.8v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  mail: '<rect x="2.75" y="4.75" width="14.5" height="10.5" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3.5 6l6.5 5 6.5-5" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+  pin: '<path d="M10 17.5s5.5-5.2 5.5-9.3A5.5 5.5 0 0 0 4.5 8.2c0 4.1 5.5 9.3 5.5 9.3z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="8.2" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+  search: '<circle cx="9" cy="9" r="5.75" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  plus: '<path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  chev: '<path d="M7.5 4.5L13 10l-5.5 5.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+  mark: '<ellipse cx="10" cy="10" rx="8" ry="3.4" stroke="currentColor" stroke-width="1.4" fill="none" transform="rotate(-20 10 10)"/><rect x="7.6" y="4.5" width="4.8" height="11" rx="1.2" fill="currentColor"/>'
+};
+const wa = '<path fill="currentColor" d="M16.04 3C9.06 3 3.4 8.64 3.4 15.6c0 2.22.58 4.39 1.69 6.3L3.3 28.5l6.78-1.77a12.6 12.6 0 0 0 5.95 1.51h.01c6.97 0 12.64-5.64 12.64-12.6 0-3.37-1.31-6.53-3.7-8.91A12.56 12.56 0 0 0 16.04 3zm0 23.1h-.01a10.5 10.5 0 0 1-5.35-1.46l-.38-.23-4.02 1.05 1.07-3.91-.25-.4a10.43 10.43 0 0 1-1.6-5.55c0-5.79 4.72-10.5 10.54-10.5 2.82 0 5.46 1.1 7.45 3.08a10.4 10.4 0 0 1 3.08 7.43c0 5.79-4.72 10.5-10.53 10.5zm5.78-7.86c-.32-.16-1.87-.92-2.16-1.02-.29-.11-.5-.16-.71.16-.21.31-.82 1.02-1 1.23-.18.21-.37.24-.69.08-.32-.16-1.33-.49-2.54-1.56-.94-.84-1.57-1.87-1.75-2.18-.18-.32-.02-.49.14-.64.14-.14.32-.37.48-.55.16-.18.21-.32.32-.53.11-.21.05-.4-.03-.55-.08-.16-.71-1.71-.98-2.34-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.55.08-.84.4-.29.31-1.1 1.07-1.1 2.62s1.13 3.04 1.29 3.25c.16.21 2.22 3.38 5.38 4.74.75.32 1.34.52 1.8.66.75.24 1.44.2 1.98.12.6-.09 1.87-.76 2.13-1.5.26-.74.26-1.37.18-1.5-.08-.13-.29-.21-.61-.37z"/>';
+const body = name === 'wa' ? wa : P[name];
+const vb = name === 'wa' ? '0 0 32 32' : '0 0 20 20';
+---
+<svg class={cls} viewBox={vb} aria-hidden="true" set:html={body} />

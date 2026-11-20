@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Pic from '../components/Pic.astro';
+import Cta from '../components/Cta.astro';
+import Faq from '../components/Faq.astro';
+import RouteMap from '../components/RouteMap.astro';
+import { SERIES, bySlug, url, BRANDS } from '../data/catalog';
+import { MARKETS, FAQ } from '../data/content';
+import { href, SITE } from '../lib/site';
+
+const orbit = ['iphone-18-pro', 'galaxy-z-fold-8', 'apple-watch-series-12', 'xiaomi-18', 'iphone-duo', 'galaxy-s26', 'galaxy-watch8', 'galaxy-z-flip-8']
+  .map((s) => bySlug(s)!).filter(Boolean);
+const featured = SERIES.filter((s) => s.featured).sort((a, b) => b.year - a.year);
+const tile = (slug: string, i = 0) => bySlug(slug)!;
+---
+<Base title={`Wholesale iPhone, Samsung and Xiaomi from Dubai | ${SITE.company}`} description="Dubai-based B2B wholesale and export of Apple, Samsung and Xiaomi phones and watches for buyers in Europe, the UK, Saudi Arabia and Qatar.">
+  <section class="hero on-dark" aria-labelledby="hero-h">
+    <div class="container hero-head">
+      <h1 id="hero-h">Global mobile wholesale.</h1>
+      <p class="hero-sub">Apple, Samsung and Xiaomi phones and watches for trade buyers.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={href('/contact/')}>Request a wholesale quote</a>
+        <a class="btn btn-light" href={href('/products/')}>Explore products</a>
+      </div>
+    </div>
+    <div class="container-wide">
+      <div class="orbit" id="orbit">
+        <div class="orbit-stage">
+          <div class="orbit-ring" aria-hidden="true"></div>
+          <ul class="orbit-items" aria-label="Featured product families">
+            {orbit.map((s, i) => <li class="orbit-item"><a href={href(url(s))}><span class="pic"><Pic s={s} eager={i < 4} /></span><span class="cap">{s.short}</span></a></li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="hero-markets"><div class="container"><p>Serving wholesale buyers in</p><ul>{MARKETS.map((m) => <li><a href={href(`/markets/${m.slug}/`)}>{m.name}</a></li>)}</ul></div></div>
+  </section>
+
+  <section class="section-s" aria-label="Brands">
+    <div class="container-wide tiles">
+      <div class="tile reveal">
+        <h3><a class="tile-main" href={href('/products/apple/')}>Apple</a></h3><p>iPhone 13 to iPhone 18 Pro and iPhone Duo. Apple Watch.</p>
+        <span class="links"><a class="link" href={href('/products/apple/#phones')}>iPhone</a><a class="link" href={href('/products/apple/#watches')}>Apple Watch</a></span>
+        <span class="tile-pic"><Pic s={tile('iphone-17')} /></span>
+      </div>
+      <div class="tile dark reveal">
+        <h3><a class="tile-main" href={href('/products/samsung/')}>Samsung</a></h3><p>Galaxy S, A, Z Fold8, Z Flip8. Galaxy Watch.</p>
+        <span class="links"><a class="link" href={href('/products/samsung/#phones')}>Galaxy phones</a><a class="link" href={href('/products/samsung/#watches')}>Galaxy Watch</a></span>
+        <span class="tile-pic"><Pic s={tile('galaxy-s26')} /></span>
+      </div>
+      <div class="tile dark reveal">
+        <h3><a class="tile-main" href={href('/products/xiaomi/')}>Xiaomi</a></h3><p>Xiaomi 14 to 18 Pro series. Xiaomi watches.</p>
+        <span class="links"><a class="link" href={href('/products/xiaomi/#phones')}>Xiaomi phones</a><a class="link" href={href('/products/xiaomi/#watches')}>Xiaomi watches</a></span>
+        <span class="tile-pic"><Pic s={tile('xiaomi-17')} /></span>
+      </div>
+      <div class="tile reveal">
+        <h3><a class="tile-main" href={href('/products/watches/')}>Watches</a></h3><p>Apple Watch, Galaxy Watch and Xiaomi, three generations each.</p>
+        <span class="links"><a class="link" href={href('/products/watches/#apple')}>Apple Watch</a><a class="link" href={href('/products/watches/#samsung')}>Galaxy Watch</a><a class="link" href={href('/products/watches/#xiaomi')}>Xiaomi</a></span>
+        <span class="tile-pic"><Pic s={tile('galaxy-watch8')} /></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="feat-h">
+    <div class="container">
+      <div class="head-l"><div><h2 id="feat-h">The latest in every line.</h2><p class="lead">Stock changes daily, so availability is confirmed on every quotation.</p></div><a class="btn btn-secondary" href={href('/products/')}>See the full catalogue</a></div>
+    </div>
+    <div class="container-wide"><div class="rail">{featured.map((s) => <ProductCard s={s} />)}</div></div>
+  </section>
+
+  <section class="section on-dark" aria-labelledby="mk-h">
+    <div class="container split split-even">
+      <div class="reveal">
+        <h2 id="mk-h">Four markets, one trade desk.</h2>
+        <p class="lead" style="margin-top:var(--space-md)">One trading desk serves buyers in Europe, the United Kingdom, Saudi Arabia and Qatar.</p>
+        <ul class="mkt-list">{MARKETS.map((m) => <li><a href={href(`/markets/${m.slug}/`)}><strong>{m.name}</strong><span>{m.ref}</span><span class="num">{m.km.toLocaleString('en-GB')} km</span></a></li>)}</ul>
+      </div>
+      <div class="reveal"><RouteMap /></div>
+    </div>
+  </section>
+
+  <section class="section band-2" aria-labelledby="pr-h">
+    <div class="container">
+      <div class="head-c"><h2 id="pr-h">From enquiry to export.</h2><p class="lead">An enquiry commits neither side. An order exists once terms are agreed in writing.</p></div>
+      <ol class="steps reveal">
+        <li><h3>Send an enquiry</h3><p>Models, storage, quantities, regional specification and destination.</p></li>
+        <li><h3>Receive a quotation</h3><p>Stock confirmed, then a written quote, line by line.</p></li>
+        <li><h3>Agree terms, then ship</h3><p>Payment and delivery terms in writing; the order is dispatched as agreed.</p></li>
+      </ol>
+      <p class="center" style="margin-top:var(--space-xl);text-align:center"><a class="link" href={href('/wholesale-process/')}>The full wholesale process</a></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-h">
+    <div class="container split">
+      <div class="stack-l"><h2 id="faq-h">Buyer questions.</h2><a class="link" href={href('/faq/')}>All questions</a></div>
+      <Faq items={[FAQ[5], FAQ[3], FAQ[6], FAQ[8], FAQ[9]]} />
+    </div>
+  </section>
+
+  <Cta />
+</Base>
+
+<script>
+  // Orbit: transforms and opacity only; pauses on hover/focus, off-screen and in background tabs; static for reduced motion.
+  const el = document.getElementById('orbit');
+  if (el) {
+    const stage = el.querySelector<HTMLElement>('.orbit-stage')!;
+    const items = [...el.querySelectorAll<HTMLElement>('.orbit-item')];
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const small = matchMedia('(max-width: 40rem)');
+    el.classList.add('is-live');
+    let w = 0, raf = 0, last = 0, t = -Math.PI / 2 + 0.4, speed = 0, hold = false, visible = true;
+    const size = () => { w = el.clientWidth; };
+    const place = () => {
+      const show = small.matches ? 6 : items.length;
+      const ring = Math.min(1040, w * 0.92) / 2;
+      const rx = ring * (small.matches ? 0.86 : 0.96), ry = ring * 0.24;
+      items.forEach((it, i) => {
+        if (i >= show) { it.style.display = 'none'; return; }
+        it.style.display = '';
+        const a = t + (i / show) * Math.PI * 2;
+        const d = (Math.sin(a) + 1) / 2;
+        const s = 0.72 + 0.4 * d;
+        it.style.transform = `translate3d(${(Math.cos(a) * rx).toFixed(1)}px, ${(Math.sin(a) * ry).toFixed(1)}px, 0) scale(${s.toFixed(3)})`;
+        it.style.opacity = (0.5 + 0.5 * d).toFixed(2);
+        it.style.zIndex = String(Math.round(d * 100));
+        it.classList.toggle('back', d < 0.78);
+      });
+    };
+    const frame = (ts: number) => {
+      const dt = last ? Math.min(ts - last, 50) : 16; last = ts;
+      speed += ((hold ? 0 : 0.00011) - speed) * 0.06;
+      t += speed * dt; place(); raf = requestAnimationFrame(frame);
+    };
+    const start = () => { if (!raf && !reduced.matches && visible && !document.hidden) { last = 0; raf = requestAnimationFrame(frame); } };
+    const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+    size(); place();
+    new ResizeObserver(() => { size(); place(); }).observe(el);
+    new IntersectionObserver((e) => { visible = e[0].isIntersecting; visible ? start() : stop(); }).observe(el);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    el.addEventListener('pointerenter', () => { hold = true; });
+    el.addEventListener('pointerleave', () => { hold = false; stage.style.transform = ''; });
+    el.addEventListener('focusin', () => { hold = true; });
+    el.addEventListener('focusout', () => { hold = false; });
+    el.closest('.hero')!.addEventListener('pointermove', (e) => {
+      const ev = e as PointerEvent; if (reduced.matches || ev.pointerType !== 'mouse') return;
+      const r = el.getBoundingClientRect(); const dx = (ev.clientX - r.left) / r.width - 0.5, dy = (ev.clientY - r.top) / r.height - 0.5;
+      stage.style.transform = `perspective(1400px) rotateX(${(-dy * 5).toFixed(2)}deg) rotateY(${(dx * 7).toFixed(2)}deg)`;
+    });
+    reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
+    start();
+  }
+</script>

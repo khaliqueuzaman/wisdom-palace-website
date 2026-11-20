@@ -1,0 +1,17 @@
+---
+import { swatch, isLight } from '../data/colors';
+interface Props { colors: string[]; compact?: boolean; max?: number }
+const { colors, compact = false, max = 6 } = Astro.props;
+const shown = compact ? colors.slice(0, max) : colors;
+const rest = colors.length - shown.length;
+---
+{colors.length === 0
+  ? <span class="muted">Confirm on enquiry</span>
+  : compact
+    ? <span class="dots" role="img" aria-label={`${colors.length} colours: ${colors.join(', ')}`}>
+        {shown.map((c) => { const h = swatch(c); return <span class="sw" style={`--sw:${h}`} data-light={isLight(h) ? '' : undefined} title={c}></span>; })}
+        {rest > 0 && <span class="more">+{rest}</span>}
+      </span>
+    : <ul class="swatches" aria-label={`${colors.length} colours`}>
+        {shown.map((c) => { const h = swatch(c); return <li><span class="sw" style={`--sw:${h}`} data-light={isLight(h) ? '' : undefined} aria-hidden="true"></span><span>{c}</span></li>; })}
+      </ul>}

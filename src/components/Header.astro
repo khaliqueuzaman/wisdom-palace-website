@@ -1,0 +1,110 @@
+---
+import { BRANDS, ofBrand, watches, url, type Brand } from '../data/catalog';
+import { href, SITE } from '../lib/site';
+import Icon from './Icon.astro';
+interface Props { current?: string }
+const { current = '' } = Astro.props;
+const brands: Brand[] = ['apple', 'samsung', 'xiaomi'];
+const newest = (list: ReturnType<typeof ofBrand>) => [...list].sort((a, b) => b.year - a.year);
+const plain = [
+  ['/markets/', 'Markets', 'markets'],
+  ['/wholesale-process/', 'Wholesale', 'wholesale-process'],
+  ['/about/', 'About', 'about'],
+  ['/contact/', 'Contact', 'contact']
+];
+---
+<header class="gh" id="gh">
+  <div class="container-wide gh-inner">
+    <a class="gh-logo" href={href('/')} aria-label={`${SITE.company}, home`}><span class="mark"><Icon name="mark" /></span>{SITE.company}</a>
+    <nav class="gh-nav" aria-label="Main">
+      <ul>
+        {brands.map((b) => (
+          <li class="gh-item" data-fly>
+            <a class="gh-link" href={href(`/products/${b}/`)} aria-current={current === b ? 'page' : undefined}>{BRANDS[b].name}</a>
+            <div class="fly">
+              <div class="container fly-inner">
+                <div class="fly-big"><h3>Shop {BRANDS[b].name}</h3><ul>
+                  <li><a href={href(`/products/${b}/`)}>All {BRANDS[b].name}</a></li>
+                  <li><a href={href(`/products/${b}/`) + '#phones'}>{BRANDS[b].phones}</a></li>
+                  <li><a href={href(`/products/${b}/`) + '#watches'}>{BRANDS[b].watches}</a></li>
+                </ul></div>
+                <div><h3>{BRANDS[b].phones}</h3><ul>{newest(ofBrand(b, 'phone')).map((s) => <li><a href={href(url(s))}>{s.short}</a></li>)}</ul></div>
+                <div><h3>{BRANDS[b].watches}</h3><ul>{newest(ofBrand(b, 'watch')).map((s) => <li><a href={href(url(s))}>{s.short}</a></li>)}</ul></div>
+                <div><h3>Wholesale</h3><ul><li><a href={href('/contact/')}>Request a quote</a></li><li><a href={href('/wholesale-process/')}>How buying works</a></li><li><a href={href('/markets/')}>Markets we serve</a></li></ul></div>
+              </div>
+            </div>
+          </li>
+        ))}
+        <li class="gh-item" data-fly>
+          <a class="gh-link" href={href('/products/watches/')} aria-current={current === 'watches' ? 'page' : undefined}>Watches</a>
+          <div class="fly">
+            <div class="container fly-inner">
+              <div class="fly-big"><h3>All watches</h3><ul><li><a href={href('/products/watches/')}>Every watch</a></li>{brands.map((b) => <li><a href={href('/products/watches/') + '#' + b}>{BRANDS[b].watches}</a></li>)}</ul></div>
+              {brands.map((b) => <div><h3>{BRANDS[b].watches}</h3><ul>{newest(watches().filter((s) => s.brand === b)).map((s) => <li><a href={href(url(s))}>{s.short}</a></li>)}</ul></div>)}
+            </div>
+          </div>
+        </li>
+        {plain.map(([p, l, k]) => <li class="gh-item"><a class="gh-link" href={href(p)} aria-current={current === k ? 'page' : undefined}>{l}</a></li>)}
+      </ul>
+    </nav>
+    <button class="gh-quote" type="button" data-quote-btn hidden aria-label="Open quote list">Quote list <span class="qn" data-quote-n>0</span></button>
+    <a class="btn btn-primary btn-s gh-cta" href={href('/contact/')}>Get a quote</a>
+    <button class="gh-menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><span></span></button>
+  </div>
+</header>
+<div class="gh-scrim" id="gh-scrim" aria-hidden="true"></div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+  <ul>
+    {brands.map((b) => (
+      <li><details><summary>{BRANDS[b].name}<Icon name="chev" /></summary><ul>
+        <li><a href={href(`/products/${b}/`)}>All {BRANDS[b].name}</a></li>
+        {newest(ofBrand(b)).map((s) => <li><a href={href(url(s))}>{s.short}</a></li>)}
+      </ul></details></li>
+    ))}
+    <li><details><summary>Watches<Icon name="chev" /></summary><ul>
+      <li><a href={href('/products/watches/')}>All watches</a></li>
+      {brands.map((b) => <li><a href={href('/products/watches/') + '#' + b}>{BRANDS[b].watches}</a></li>)}
+    </ul></details></li>
+    {plain.map(([p, l]) => <li><a href={href(p)}>{l}</a></li>)}
+  </ul>
+  <div class="sheet-cta">
+    <a class="btn btn-primary" href={href('/contact/')}>Request a wholesale quote</a>
+    <a class="btn btn-wa" href={`https://wa.me/${SITE.whatsappDigits}`} target="_blank" rel="noopener"><Icon name="wa" />WhatsApp {SITE.whatsapp}</a>
+  </div>
+</div>
+
+<script>
+  const gh = document.getElementById('gh')!;
+  const scrim = document.getElementById('gh-scrim')!;
+  const items = [...gh.querySelectorAll<HTMLElement>('[data-fly]')];
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  let timer = 0;
+  const close = () => { items.forEach((i) => i.classList.remove('open')); scrim.classList.remove('show'); };
+  const open = (it: HTMLElement) => { items.forEach((i) => i.classList.toggle('open', i === it)); scrim.classList.add('show'); };
+  items.forEach((it) => {
+    it.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse' || !fine.matches) return; clearTimeout(timer); timer = window.setTimeout(() => open(it), 120); });
+    it.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'mouse') return; clearTimeout(timer); timer = window.setTimeout(close, 180); });
+    it.addEventListener('focusin', () => open(it));
+    it.addEventListener('focusout', (e) => { if (!it.contains(e.relatedTarget as Node)) close(); });
+  });
+  scrim.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const o = gh.querySelector<HTMLElement>('.gh-item.open > a'); close(); o?.focus(); closeSheet(); } });
+
+  const btn = gh.querySelector<HTMLButtonElement>('.gh-menu')!;
+  const sheet = document.getElementById('sheet')!;
+  function closeSheet() { if (!sheet.classList.contains('open')) return; sheet.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); document.documentElement.style.overflow = ''; btn.focus(); }
+  btn.addEventListener('click', () => {
+    const o = !sheet.classList.contains('open');
+    if (!o) return closeSheet();
+    sheet.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); document.documentElement.style.overflow = 'hidden';
+    sheet.querySelector<HTMLElement>('summary, a')?.focus();
+  });
+  sheet.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const f = [btn, ...sheet.querySelectorAll<HTMLElement>('summary, a')].filter((x) => x.offsetParent);
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+</script>

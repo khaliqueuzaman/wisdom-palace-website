@@ -1,0 +1,44 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Crumbs from '../../../components/Crumbs.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import Cta from '../../../components/Cta.astro';
+import { BRANDS, ofBrand, url, union, type Brand } from '../../../data/catalog';
+import { href, SITE } from '../../../lib/site';
+export function getStaticPaths() { return (['apple', 'samsung', 'xiaomi'] as Brand[]).map((brand) => ({ params: { brand } })); }
+const brand = Astro.params.brand as Brand;
+const B = BRANDS[brand];
+const phones = ofBrand(brand, 'phone').sort((a, b) => b.year - a.year);
+const wts = ofBrand(brand, 'watch').sort((a, b) => b.year - a.year);
+const intro: Record<Brand, string> = {
+  apple: 'iPhone from the 2021 iPhone 13 series to the iPhone 18 Pro and the foldable iPhone Duo, and Apple Watch Series 10 to 12, Ultra 2 to 4 and SE 3.',
+  samsung: 'Galaxy S23 to S26 FE, Galaxy A57 and both foldable lines up to Fold8 and Flip8, plus Galaxy Watch7, Watch8, Watch9 and Watch Ultra.',
+  xiaomi: 'The Xiaomi 14, 15, 17 and 18 Pro flagship series with their Ultra and T models, plus Xiaomi Watch and Redmi Watch.'
+};
+---
+<Base title={`${B.name} Wholesale: ${B.phones} and ${B.watches} | ${SITE.company}, Dubai`} description={`Wholesale ${B.name} from Dubai. ${intro[brand]}`} current={brand}>
+  <Crumbs items={[['/products/', 'Products'], [`/products/${brand}/`, B.name]]} />
+  <div class="container page-head">
+    <h1>{B.name} wholesale.</h1>
+    <p class="lead">{intro[brand]} Stock is confirmed on every quotation.</p>
+    <div class="actions"><a class="btn btn-primary" href={href('/contact/')}>Request a wholesale quote</a><a class="btn btn-secondary" href="#watches">{B.watches}</a></div>
+  </div>
+
+  <section class="section-s" id="phones" aria-labelledby="h-phones">
+    <div class="container"><div class="head-l"><h2 id="h-phones">{B.phones}</h2></div><div class="grid-cards">{phones.map((s, i) => <ProductCard s={s} eager={i < 3} />)}</div></div>
+  </section>
+  <section class="section-s band-2" id="watches" aria-labelledby="h-watches">
+    <div class="container"><div class="head-l"><h2 id="h-watches">{B.watches}</h2></div><div class="grid-cards">{wts.map((s) => <ProductCard s={s} />)}</div></div>
+  </section>
+
+  <section class="section" aria-labelledby="gen-h">
+    <div class="container">
+      <div class="head-l"><div><h2 id="gen-h">Every model at a glance.</h2><p class="lead">The manufacturer’s line-up and storage options for each series. A reference for your enquiry, not a stock list.</p></div></div>
+      <div class="sheet-table"><table>
+        <thead><tr><th scope="col">Series</th><th scope="col">Models</th><th scope="col">Storage or sizes</th></tr></thead>
+        <tbody>{[...phones, ...wts].map((s) => <tr><td><a class="link" href={href(url(s))}>{s.short}</a> <span class="muted num">{s.year}</span></td><td>{s.variants.map((v) => v.name).join(', ')}</td><td>{(s.kind === 'phone' ? union(s, 'storage') : union(s, 'sizes')).join(', ') || 'See series page'}</td></tr>)}</tbody>
+      </table></div>
+    </div>
+  </section>
+  <Cta />
+</Base>

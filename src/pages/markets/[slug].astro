@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import Icon from '../../components/Icon.astro';
+import Cta from '../../components/Cta.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { MARKETS, type Market } from '../../data/content';
+import { SERIES } from '../../data/catalog';
+import { href, waLink, SITE } from '../../lib/site';
+export function getStaticPaths() { return MARKETS.map((m) => ({ params: { slug: m.slug }, props: { m } })); }
+const { m } = Astro.props as { m: Market };
+const picks = SERIES.filter((s) => s.featured).slice(0, 3);
+---
+<Base title={`Mobile Phone Wholesale for ${m.name} | ${SITE.company}, Dubai`} description={`Wholesale Apple, Samsung and Xiaomi phones and watches for buyers in ${m.name}, quoted from Deira, Dubai. ${m.buyers}.`} current="markets">
+  <Crumbs items={[['/markets/', 'Markets'], [`/markets/${m.slug}/`, m.name]]} />
+  <div class="container page-head">
+    <h1>Wholesale for {m.name}.</h1>
+    <p class="lead">{m.angle}</p>
+    <div class="actions"><a class="btn btn-primary" href={href('/contact/')}>Request a wholesale quote</a><a class="btn btn-wa" href={waLink(`Hello ${SITE.company}, I am a buyer in ${m.name} and would like wholesale availability.`)} target="_blank" rel="noopener"><Icon name="wa" />WhatsApp enquiry</a></div>
+  </div>
+  <section class="section-s band-2">
+    <div class="container split">
+      <div class="facts-list stack">
+        <h2>At a glance</h2>
+        <div class="sheet-table"><table><tbody>
+          <tr><th scope="row">Distance from Deira</th><td class="num">{m.km.toLocaleString('en-GB')} km to {m.ref}</td></tr>
+          <tr><th scope="row">Time difference</th><td>{m.tz}</td></tr>
+          <tr><th scope="row">Typical buyers</th><td>{m.buyers}</td></tr>
+          <tr><th scope="row">Our hours</th><td>{SITE.hours}, Dubai time</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="stack">
+        <h2>Include in your enquiry</h2>
+        <ul class="checklist">{m.ask.map((a) => <li><Icon name="check" /><span>{a}</span></li>)}</ul>
+      </div>
+    </div>
+  </section>
+  <section class="section-s">
+    <div class="container"><div class="head-l"><h2>Current flagship lines</h2><a class="link" href={href('/products/')}>Full catalogue</a></div>
+      <div class="grid-cards">{picks.map((s) => <ProductCard s={s} />)}</div></div>
+  </section>
+  <Cta />
+</Base>

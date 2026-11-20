@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from '../components/Crumbs.astro';
+import Cta from '../components/Cta.astro';
+import { href, SITE } from '../lib/site';
+---
+<Base title={`About ${SITE.company}: Mobile Wholesale in Deira, Dubai since 2015`} description="Wisdom Palace has supplied trade buyers with Apple, Samsung and Xiaomi phones from Naif Road, Deira, Dubai since 2015." current="about">
+  <Crumbs items={[['/about/', 'About']]} />
+  <div class="container page-head">
+    <h1>A trade desk in Deira since 2015.</h1>
+    <p class="lead">{SITE.company} supplies Apple, Samsung and Xiaomi phones and watches to distributors, retailers and importers.</p>
+  </div>
+  <section class="section-s"><div class="container facts3">
+    <div><h2 style="font-size:var(--text-h4)">Founded 2015</h2><p>Trading mobile phones from Naif Road, Deira, Dubai.</p></div>
+    <div><h2 style="font-size:var(--text-h4)">Trade buyers only</h2><p>We quote businesses: distributors, retailers, resellers, importers and procurement teams.</p></div>
+    <div><h2 style="font-size:var(--text-h4)">Four markets</h2><p>Europe, the United Kingdom, Saudi Arabia and Qatar. <a class="link" href={href('/markets/')}>See markets</a></p></div>
+  </div></section>
+  <section class="section-s band-2"><div class="container split">
+    <h2>How we work.</h2>
+    <div class="prose"><p>No prices or stock counts are published. Every enquiry gets a written quotation that lists model, storage, colour and regional specification line by line.</p><p>Visit us at {SITE.address}. Open {SITE.hours}.</p><p><a class="link" href={href('/contact/')}>Contact and directions</a></p></div>
+  </div></section>
+  <Cta />
+</Base>

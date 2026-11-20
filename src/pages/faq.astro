@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from '../components/Crumbs.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import { FAQ } from '../data/content';
+import { SITE } from '../lib/site';
+const ld = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+---
+<Base title={`Wholesale FAQ | ${SITE.company}, Dubai`} description="Answers for trade buyers: products, condition, pricing, availability, markets, warranty and how to contact Wisdom Palace in Dubai." current="faq" jsonld={ld}>
+  <Crumbs items={[['/faq/', 'FAQ']]} />
+  <div class="container page-head"><h1>Questions buyers ask.</h1></div>
+  <section class="section-s"><div class="container" style="max-width:860px"><Faq items={FAQ} /></div></section>
+  <Cta />
+</Base>

@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Cta from '../../components/Cta.astro';
+import { BRANDS, watches, type Brand } from '../../data/catalog';
+import { href, SITE } from '../../lib/site';
+const brands: Brand[] = ['apple', 'samsung', 'xiaomi'];
+---
+<Base title={`Wholesale Smartwatches: Apple Watch, Galaxy Watch, Xiaomi | ${SITE.company}`} description="Wholesale Apple Watch, Samsung Galaxy Watch and Xiaomi watches from Dubai, the last three generations of each line." current="watches">
+  <Crumbs items={[['/products/', 'Products'], ['/products/watches/', 'Watches']]} />
+  <div class="container page-head">
+    <h1>Watches.</h1>
+    <p class="lead">The last three generations of Apple Watch, Galaxy Watch and Xiaomi watches, grouped by manufacturer.</p>
+    <div class="actions">{brands.map((b) => <a class="btn btn-secondary" href={'#' + b}>{BRANDS[b].watches}</a>)}</div>
+  </div>
+  {brands.map((b, i) => (
+    <section class={'section-s' + (i % 2 ? ' band-2' : '')} id={b} aria-labelledby={'w-' + b}>
+      <div class="container"><div class="head-l"><h2 id={'w-' + b}>{BRANDS[b].watches}</h2><a class="link" href={href(`/products/${b}/`)}>All {BRANDS[b].name}</a></div>
+        <div class="grid-cards">{watches().filter((s) => s.brand === b).sort((x, y) => y.year - x.year).map((s) => <ProductCard s={s} />)}</div></div>
+    </section>
+  ))}
+  <Cta title="Mixing watches and phones?" text="One enquiry can cover phones and watches from all three brands." />
+</Base>

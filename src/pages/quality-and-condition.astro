@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from '../components/Crumbs.astro';
+import Cta from '../components/Cta.astro';
+import { href, SITE } from '../lib/site';
+const facts = [
+  ['Brand-new units', 'We supply new phones and watches. Each quotation line names the model, storage and colour.'],
+  ['Regional specification', 'Phones are made in regional versions. The specification is stated on every quotation line, and you choose the one you need in your enquiry.'],
+  ['Stock checked per quotation', 'We confirm availability when we quote. The website shows no stock counts.']
+];
+---
+<Base title={`Product Condition and Regional Specification | ${SITE.company}`} description="Wisdom Palace supplies brand-new Apple, Samsung and Xiaomi phones and watches. Regional specification is stated on every quotation line." current="quality">
+  <Crumbs items={[['/quality-and-condition/', 'Quality and condition']]} />
+  <div class="container page-head">
+    <h1>New units, stated clearly.</h1>
+    <p class="lead">Every quotation line says exactly what you are buying.</p>
+  </div>
+  <section class="section-s"><div class="container facts3">
+    {facts.map(([t, d]) => <div><h2 style="font-size:var(--text-h4)">{t}</h2><p>{d}</p></div>)}
+  </div></section>
+  <section class="section-s band-2"><div class="container split">
+    <h2>Warranty.</h2>
+    <div class="prose"><p>Warranty is as per our terms and conditions: the manufacturer’s warranty for the regional specification, and dead-on-arrival cover reported within 7 days of delivery. Ask the sales team if your market needs a specific regional version for local service.</p><p><a class="link" href={href('/terms-of-business/')}>Read the terms of business</a></p></div>
+  </div></section>
+  <Cta />
+</Base>

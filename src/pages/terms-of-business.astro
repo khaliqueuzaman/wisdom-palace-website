@@ -1,0 +1,18 @@
+---
+import Legal from '../components/Legal.astro';
+import { SITE, href } from '../lib/site';
+const s: [string, string][] = [
+  ['Trade sales only', '<p>We sell to businesses: distributors, retailers, resellers, importers and procurement teams. Quotations are issued to the company named in the enquiry.</p>'],
+  ['Quotations', '<p>Prices, quantities, storage, colours and regional specification are stated line by line on each quotation. Website content is a product reference and is not an offer to sell.</p>'],
+  ['Payment terms', '<p>Payment terms are agreed for each order during the enquiry and stated on the quotation.</p>'],
+  ['Delivery', '<p>Delivery method, timing and the point where risk passes to the buyer are agreed for each order and stated on the quotation.</p>'],
+  ['Product condition', '<p>Units are supplied brand new in their original packaging, as described on the quotation.</p>'],
+  ['Warranty', `<p>Products carry the manufacturer’s warranty that applies to their regional specification, serviced through the manufacturer’s authorised service network where it is offered.</p>
+    <p>Dead-on-arrival (DOA) units must be reported within 7 days of delivery, with the IMEI or serial number and photos or video of the fault. After inspection we replace the unit or issue a credit note.</p>
+    <p>Warranty does not cover physical or liquid damage, unauthorised repair or software modification, or misuse.</p>`],
+  ['Returns', '<p>Returns are accepted only for DOA units or for units that do not match the quotation, reported within 7 days of delivery. Sealed units are not taken back for change of mind.</p>'],
+  ['Governing law', '<p>These terms are governed by the laws of the United Arab Emirates. Shipments must also comply with the import laws and regulations of the destination country, and the buyer is responsible for import permits, duties and local compliance unless agreed otherwise in writing.</p>'],
+  ['Contact', `<p>${SITE.company}, ${SITE.address}. WhatsApp ${SITE.whatsapp}. <a class="link" href="${href('/contact/')}">Contact us</a></p>`]
+];
+---
+<Legal title={`Terms of Business | ${SITE.company}`} path="/terms-of-business/" h1="Terms of business" lead="Terms for trade buyers of Wisdom Palace." description="Terms for trade buyers of Wisdom Palace: quotations, payment, delivery, warranty, returns and governing law." sections={s} />

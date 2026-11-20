@@ -1,0 +1,14 @@
+---
+import Legal from '../components/Legal.astro';
+import { SITE, href } from '../lib/site';
+const s: [string, string][] = [
+  ['Who we are', `<p>${SITE.company}, ${SITE.address}. WhatsApp ${SITE.whatsapp}.</p>`],
+  ['What we collect', '<p>When you send an enquiry: your name, company, business email, WhatsApp number, destination country, the models, quantities and regional specification you ask about, and any notes you add.</p>'],
+  ['Why we use it', '<p>Only to reply to your enquiry, prepare a quotation and handle any order that follows.</p>'],
+  ['How long we keep it', '<p>We keep enquiry details for 1 year from the date of the enquiry, then delete them, unless an order requires us to keep records for longer under UAE law.</p>'],
+  ['Who we share it with', '<p>We do not sell your details. They are processed by our website host and email provider so the enquiry reaches the sales team.</p>'],
+  ['Cookies', `<p>See the <a class="link" href="${href('/cookie-policy/')}">cookie policy</a>. Analytics run only if you accept them.</p>`],
+  ['Your rights', `<p>Ask us to see, correct or delete your details on WhatsApp ${SITE.whatsapp}.</p>`]
+];
+---
+<Legal title={`Privacy Policy | ${SITE.company}`} path="/privacy-policy/" h1="Privacy policy" lead="How we use the details you send us." description="How Wisdom Palace uses the details you send in a wholesale enquiry." sections={s} />

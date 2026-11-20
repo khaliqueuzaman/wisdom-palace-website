@@ -1,0 +1,332 @@
+{
+ "apple-watch-se-3": {
+  "w": 553,
+  "h": 449,
+  "name": "Apple Watch SE 3"
+ },
+ "apple-watch-series-10": {
+  "w": 706,
+  "h": 449,
+  "name": "Apple Watch Series 10"
+ },
+ "apple-watch-series-11": {
+  "w": 852,
+  "h": 450,
+  "name": "Apple Watch Series 11"
+ },
+ "apple-watch-series-12": {
+  "w": 852,
+  "h": 444,
+  "name": "Apple Watch Series 12"
+ },
+ "apple-watch-ultra-2": {
+  "w": 635,
+  "h": 497,
+  "name": "Apple Watch Ultra 2"
+ },
+ "apple-watch-ultra-3": {
+  "w": 635,
+  "h": 497,
+  "name": "Apple Watch Ultra 3"
+ },
+ "apple-watch-ultra-4": {
+  "w": 635,
+  "h": 497,
+  "name": "Apple Watch Ultra 4"
+ },
+ "galaxy-a57-5g": {
+  "w": 378,
+  "h": 453,
+  "name": "Galaxy A57 5G"
+ },
+ "galaxy-s23-ultra": {
+  "w": 454,
+  "h": 465,
+  "name": "Galaxy S23 Ultra"
+ },
+ "galaxy-s23": {
+  "w": 343,
+  "h": 415,
+  "name": "Galaxy S23"
+ },
+ "galaxy-s24-ultra": {
+  "w": 467,
+  "h": 469,
+  "name": "Galaxy S24 Ultra"
+ },
+ "galaxy-s24": {
+  "w": 351,
+  "h": 425,
+  "name": "Galaxy S24"
+ },
+ "galaxy-s25-ultra": {
+  "w": 467,
+  "h": 470,
+  "name": "Galaxy S25 Ultra"
+ },
+ "galaxy-s25": {
+  "w": 351,
+  "h": 424,
+  "name": "Galaxy S25"
+ },
+ "galaxy-s26-fe": {
+  "w": 390,
+  "h": 471,
+  "name": "Galaxy S26 FE"
+ },
+ "galaxy-s26-ultra": {
+  "w": 464,
+  "h": 470,
+  "name": "Galaxy S26 Ultra"
+ },
+ "galaxy-s26": {
+  "w": 356,
+  "h": 429,
+  "name": "Galaxy S26"
+ },
+ "galaxy-watch-ultra": {
+  "w": 320,
+  "h": 501,
+  "name": "Galaxy Watch Ultra"
+ },
+ "galaxy-watch-ultra2": {
+  "w": 295,
+  "h": 457,
+  "name": "Galaxy Watch Ultra2"
+ },
+ "galaxy-watch7": {
+  "w": 276,
+  "h": 458,
+  "name": "Galaxy Watch7"
+ },
+ "galaxy-watch8-classic": {
+  "w": 291,
+  "h": 439,
+  "name": "Galaxy Watch8 Classic"
+ },
+ "galaxy-watch8": {
+  "w": 255,
+  "h": 423,
+  "name": "Galaxy Watch8"
+ },
+ "galaxy-watch9": {
+  "w": 256,
+  "h": 420,
+  "name": "Galaxy Watch9"
+ },
+ "galaxy-z-flip5": {
+  "w": 370,
+  "h": 475,
+  "name": "Galaxy Z Flip5"
+ },
+ "galaxy-z-flip6": {
+  "w": 381,
+  "h": 484,
+  "name": "Galaxy Z Flip6"
+ },
+ "galaxy-z-flip7": {
+  "w": 406,
+  "h": 509,
+  "name": "Galaxy Z Flip7"
+ },
+ "galaxy-z-flip8": {
+  "w": 411,
+  "h": 513,
+  "name": "Galaxy Z Flip8"
+ },
+ "galaxy-z-fold4": {
+  "w": 411,
+  "h": 488,
+  "name": "Galaxy Z Fold4"
+ },
+ "galaxy-z-fold5": {
+  "w": 389,
+  "h": 464,
+  "name": "Galaxy Z Fold5"
+ },
+ "galaxy-z-fold6": {
+  "w": 401,
+  "h": 462,
+  "name": "Galaxy Z Fold6"
+ },
+ "galaxy-z-fold7": {
+  "w": 448,
+  "h": 492,
+  "name": "Galaxy Z Fold7"
+ },
+ "galaxy-z-fold8-ultra": {
+  "w": 451,
+  "h": 499,
+  "name": "Galaxy Z Fold8 Ultra"
+ },
+ "galaxy-z-fold8": {
+  "w": 648,
+  "h": 496,
+  "name": "Galaxy Z Fold8"
+ },
+ "iphone-13-pro": {
+  "w": 1000,
+  "h": 658,
+  "name": "iPhone 13 Pro"
+ },
+ "iphone-13": {
+  "w": 1000,
+  "h": 624,
+  "name": "iPhone 13"
+ },
+ "iphone-14-pro": {
+  "w": 900,
+  "h": 656,
+  "name": "iPhone 14 Pro"
+ },
+ "iphone-14": {
+  "w": 1074,
+  "h": 656,
+  "name": "iPhone 14"
+ },
+ "iphone-15-pro": {
+  "w": 900,
+  "h": 659,
+  "name": "iPhone 15 Pro"
+ },
+ "iphone-15": {
+  "w": 950,
+  "h": 656,
+  "name": "iPhone 15"
+ },
+ "iphone-16-pro": {
+  "w": 900,
+  "h": 659,
+  "name": "iPhone 16 Pro"
+ },
+ "iphone-16": {
+  "w": 950,
+  "h": 656,
+  "name": "iPhone 16"
+ },
+ "iphone-16e": {
+  "w": 570,
+  "h": 656,
+  "name": "iPhone 16e"
+ },
+ "iphone-17-pro": {
+  "w": 939,
+  "h": 659,
+  "name": "iPhone 17 Pro"
+ },
+ "iphone-17": {
+  "w": 996,
+  "h": 650,
+  "name": "iPhone 17"
+ },
+ "iphone-17e": {
+  "w": 690,
+  "h": 656,
+  "name": "iPhone 17e"
+ },
+ "iphone-18-pro": {
+  "w": 265,
+  "h": 356,
+  "name": "iPhone 18 Pro"
+ },
+ "iphone-air": {
+  "w": 904,
+  "h": 660,
+  "name": "iPhone Air"
+ },
+ "iphone-duo": {
+  "w": 398,
+  "h": 258,
+  "name": "iPhone Duo"
+ },
+ "redmi-watch-5": {
+  "w": 649,
+  "h": 320,
+  "name": "REDMI Watch 5"
+ },
+ "redmi-watch-6": {
+  "w": 187,
+  "h": 296,
+  "name": "REDMI Watch 6"
+ },
+ "xiaomi-14-ultra": {
+  "w": 623,
+  "h": 550,
+  "name": "Xiaomi 14 Ultra"
+ },
+ "xiaomi-14": {
+  "w": 844,
+  "h": 660,
+  "name": "Xiaomi 14"
+ },
+ "xiaomi-15-ultra": {
+  "w": 807,
+  "h": 599,
+  "name": "Xiaomi 15 Ultra"
+ },
+ "xiaomi-15": {
+  "w": 685,
+  "h": 808,
+  "name": "Xiaomi 15"
+ },
+ "xiaomi-15t-pro": {
+  "w": 680,
+  "h": 810,
+  "name": "Xiaomi 15T Pro"
+ },
+ "xiaomi-17-ultra": {
+  "w": 683,
+  "h": 806,
+  "name": "Xiaomi 17 Ultra"
+ },
+ "xiaomi-17": {
+  "w": 843,
+  "h": 643,
+  "name": "Xiaomi 17"
+ },
+ "xiaomi-17t-pro": {
+  "w": 570,
+  "h": 470,
+  "name": "Xiaomi 17T Pro"
+ },
+ "xiaomi-17t": {
+  "w": 715,
+  "h": 470,
+  "name": "Xiaomi 17T"
+ },
+ "xiaomi-18-pro-max": {
+  "w": 272,
+  "h": 324,
+  "name": "Xiaomi 18 Pro Max"
+ },
+ "xiaomi-18-pro": {
+  "w": 272,
+  "h": 323,
+  "name": "Xiaomi 18 Pro"
+ },
+ "xiaomi-watch-5": {
+  "w": 190,
+  "h": 295,
+  "name": "Xiaomi Watch 5"
+ },
+ "xiaomi-watch-s3": {
+  "w": 436,
+  "h": 348,
+  "name": "Xiaomi Watch S3"
+ },
+ "xiaomi-watch-s4": {
+  "w": 256,
+  "h": 296,
+  "name": "Xiaomi Watch S4"
+ },
+ "xiaomi-watch-s5-41": {
+  "w": 163,
+  "h": 296,
+  "name": "Xiaomi Watch S5 41mm"
+ },
+ "xiaomi-watch-s5": {
+  "w": 200,
+  "h": 296,
+  "name": "Xiaomi Watch S5"
+ }
+}

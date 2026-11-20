@@ -1,0 +1,102 @@
+---
+import type { Series } from '../data/catalog';
+import { REGIONS } from '../data/content';
+import { swatch, isLight } from '../data/colors';
+import { href } from '../lib/site';
+interface Props { s: Series }
+const { s } = Astro.props;
+const isWatch = s.kind === 'watch';
+const data = s.variants.map((v) => ({ name: v.name, opts: (isWatch ? v.sizes : v.storage) || [], colors: v.colors.map((c) => [c, swatch(c), isLight(swatch(c)) ? 1 : 0]) }));
+const optLabel = isWatch ? 'Case size' : 'Storage';
+---
+<section class="section-s builder-wrap" id="order" aria-labelledby="order-h">
+  <div class="container">
+    <div class="head-l"><div><h2 id="order-h">Build your order.</h2><p class="lead">Choose the exact model, {optLabel.toLowerCase()}, colour and quantity. Add as many lines as you need, then send them as one enquiry.</p></div></div>
+    <form class="builder" data-builder data-series={s.name} data-slug={s.slug} data-optlabel={optLabel} onsubmit="return false">
+      <script type="application/json" set:html={JSON.stringify(data)} />
+      <div class="builder-steps">
+        <fieldset class="bstep">
+          <legend><span class="bnum">1</span>Model</legend>
+          <div class="pills" data-models>
+            {s.variants.map((v, i) => <label class="pill"><input type="radio" name="model" value={i} checked={i === 0} /><span>{v.name}</span></label>)}
+          </div>
+        </fieldset>
+        <fieldset class="bstep" data-optwrap>
+          <legend><span class="bnum">2</span>{optLabel}</legend>
+          <div class="pills" data-opts></div>
+        </fieldset>
+        <fieldset class="bstep">
+          <legend><span class="bnum">3</span>Colour <span class="bsel" data-colname></span></legend>
+          <div class="cswatches" data-colors></div>
+        </fieldset>
+        <div class="bstep brow">
+          <div class="field">
+            <label for="b-region"><span class="bnum">4</span>Regional specification</label>
+            <select class="input" id="b-region" name="region">{REGIONS.map((r) => <option selected={r === 'No preference'}>{r}</option>)}</select>
+          </div>
+          <div class="field">
+            <label for="b-qty"><span class="bnum">5</span>Quantity (units)</label>
+            <div class="stepper">
+              <button type="button" data-step="-10" aria-label="Decrease by 10">−</button>
+              <input class="input" id="b-qty" name="qty" inputmode="numeric" value="10" aria-describedby="b-qty-err" />
+              <button type="button" data-step="10" aria-label="Increase by 10">+</button>
+            </div>
+            <p class="err" id="b-qty-err"></p>
+          </div>
+        </div>
+      </div>
+      <aside class="builder-sum" aria-live="polite">
+        <h3>Your selection</h3>
+        <p class="bsum-line" data-summary></p>
+        <button class="btn btn-primary" type="button" data-add>Add to quote list</button>
+        <p class="bsum-note" data-added hidden>Added. <button type="button" class="linkbtn" data-open-quote>View quote list</button> or <a class="link" href={href('/contact/')}>send enquiry</a>.</p>
+        <p class="hint">No payment. Prices and stock are confirmed in a written quotation.</p>
+      </aside>
+    </form>
+  </div>
+</section>
+
+<script>
+  import { addLine } from '../lib/quote';
+  document.querySelectorAll<HTMLFormElement>('[data-builder]').forEach((f) => {
+    const data = JSON.parse(f.querySelector('script[type="application/json"]')!.textContent || '[]') as { name: string; opts: string[]; colors: [string, string, number][] }[];
+    const optsEl = f.querySelector<HTMLElement>('[data-opts]')!, colEl = f.querySelector<HTMLElement>('[data-colors]')!;
+    const optWrap = f.querySelector<HTMLElement>('[data-optwrap]')!, colName = f.querySelector<HTMLElement>('[data-colname]')!;
+    const sum = f.querySelector<HTMLElement>('[data-summary]')!, qty = f.querySelector<HTMLInputElement>('[name="qty"]')!;
+    const err = f.querySelector<HTMLElement>('#b-qty-err')!, added = f.querySelector<HTMLElement>('[data-added]')!;
+    const val = (n: string) => (f.querySelector<HTMLInputElement>(`input[name="${n}"]:checked`)?.value ?? '');
+    const el = (h: string) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstElementChild as HTMLElement; };
+    const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+    function renderVariant() {
+      const v = data[Number(val('model'))];
+      optsEl.replaceChildren(...v.opts.map((o, i) => el(`<label class="pill"><input type="radio" name="opt" value="${esc(o)}" ${i === 0 ? 'checked' : ''}><span>${esc(o)}</span></label>`)));
+      optWrap.hidden = v.opts.length === 0;
+      const cols: [string, string, number][] = v.colors.length ? v.colors : [];
+      colEl.replaceChildren(
+        ...cols.map(([c, h, light], i) => el(`<label class="cswatch" title="${esc(c)}"><input type="radio" name="colour" value="${esc(c)}" ${i === 0 ? 'checked' : ''}><span class="sw" style="--sw:${h}" ${light ? 'data-light' : ''}></span><span class="cs-name">${esc(c)}</span></label>`)),
+        el(`<label class="cswatch cs-any"><input type="radio" name="colour" value="Any colour" ${cols.length ? '' : 'checked'}><span class="sw sw-any"></span><span class="cs-name">Any / mixed</span></label>`)
+      );
+      update();
+    }
+    function update() {
+      const v = data[Number(val('model'))];
+      colName.textContent = val('colour');
+      const q = parseInt(qty.value, 10);
+      sum.textContent = [v.name, val('opt'), val('colour'), (f.querySelector<HTMLSelectElement>('[name="region"]')!.value), q > 0 ? `${q} units` : ''].filter(Boolean).join(' · ');
+      added.hidden = true;
+    }
+    f.addEventListener('change', (e) => { if ((e.target as HTMLInputElement).name === 'model') renderVariant(); else update(); });
+    qty.addEventListener('input', () => { qty.value = qty.value.replace(/\D/g, '').slice(0, 6); err.textContent = ''; update(); });
+    f.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) => b.addEventListener('click', () => { qty.value = String(Math.max(1, (parseInt(qty.value, 10) || 0) + Number(b.dataset.step))); update(); }));
+    f.querySelector('[data-add]')!.addEventListener('click', () => {
+      const q = parseInt(qty.value, 10);
+      if (!(q > 0)) { err.textContent = 'Enter a quantity of at least 1.'; qty.focus(); return; }
+      const v = data[Number(val('model'))];
+      addLine({ slug: f.dataset.slug!, series: f.dataset.series!, model: v.name, storage: val('opt'), colour: val('colour'), region: f.querySelector<HTMLSelectElement>('[name="region"]')!.value, qty: q });
+      added.hidden = false;
+      (window as any).wpTrack?.('quote_add', { model: v.name });
+    });
+    f.querySelector('[data-open-quote]')!.addEventListener('click', () => window.dispatchEvent(new Event('quote:open')));
+    renderVariant();
+  });
+</script>

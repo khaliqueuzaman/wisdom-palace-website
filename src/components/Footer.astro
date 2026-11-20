@@ -1,0 +1,42 @@
+---
+import { BRANDS, ofBrand, url, type Brand } from '../data/catalog';
+import { MARKETS } from '../data/content';
+import { href, SITE } from '../lib/site';
+const brands: Brand[] = ['apple', 'samsung', 'xiaomi'];
+const year = new Date().getFullYear();
+---
+<footer class="gf">
+  <div class="container gf-top">
+    {brands.map((b) => (
+      <div><h2>{BRANDS[b].name}</h2><ul>
+        <li><a href={href(`/products/${b}/`)}>All {BRANDS[b].name}</a></li>
+        {[...ofBrand(b, 'phone')].sort((x, y) => y.year - x.year).slice(0, 5).map((s) => <li><a href={href(url(s))}>{s.short}</a></li>)}
+        <li><a href={href(`/products/${b}/`) + '#watches'}>{BRANDS[b].watches}</a></li>
+      </ul></div>
+    ))}
+    <div><h2>Wholesale</h2><ul>
+      <li><a href={href('/products/')}>Full catalogue</a></li>
+      <li><a href={href('/products/watches/')}>All watches</a></li>
+      <li><a href={href('/wholesale-process/')}>Wholesale process</a></li>
+      <li><a href={href('/quality-and-condition/')}>Quality and specification</a></li>
+      <li><a href={href('/faq/')}>FAQ</a></li>
+      {MARKETS.map((m) => <li><a href={href(`/markets/${m.slug}/`)}>{m.name}</a></li>)}
+    </ul></div>
+    <div><h2>{SITE.company}</h2><ul>
+      <li><a href={href('/about/')}>About us</a></li>
+      <li><a href={href('/contact/')}>Contact and enquiry</a></li>
+      <li><a href={`https://wa.me/${SITE.whatsappDigits}`} target="_blank" rel="noopener">WhatsApp {SITE.whatsapp}</a></li>
+      {SITE.addressLines.map((l) => <li>{l}</li>)}
+      <li>{SITE.hours}</li>
+    </ul></div>
+  </div>
+  <div class="gf-bottom"><div class="container">
+    <span>Copyright {year} {SITE.company}. Apple, Samsung and Xiaomi trademarks belong to their owners.</span>
+    <ul>
+      <li><a href={href('/privacy-policy/')}>Privacy Policy</a></li>
+      <li><a href={href('/terms-of-business/')}>Terms of Business</a></li>
+      <li><a href={href('/cookie-policy/')}>Cookie Policy</a></li>
+      <li><button type="button" id="cookie-settings">Cookie settings</button></li>
+    </ul>
+  </div></div>
+</footer>

@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { href, SITE } from '../lib/site';
+---
+<Base title={`Page not found | ${SITE.company}`} description="This page does not exist." noindex>
+  <div class="container page-head" style="padding-block:var(--space-4xl)">
+    <h1>This page does not exist.</h1>
+    <p class="lead">The link may be old. Try the catalogue, or send an enquiry.</p>
+    <div class="actions"><a class="btn btn-primary" href={href('/products/')}>Browse the catalogue</a><a class="btn btn-secondary" href={href('/contact/')}>Contact sales</a></div>
+  </div>
+</Base>

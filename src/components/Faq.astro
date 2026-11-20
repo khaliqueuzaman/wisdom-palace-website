@@ -1,0 +1,15 @@
+---
+import type { QA } from '../data/content';
+import { href } from '../lib/site';
+import Icon from './Icon.astro';
+interface Props { items: QA[] }
+const { items } = Astro.props;
+---
+<div class="faq">
+  {items.map((f) => (
+    <details>
+      <summary>{f.q}<Icon name="plus" /></summary>
+      <div class="answer"><p>{f.a}</p>{f.link && <p><a class="link" href={href(f.link[0])}>{f.link[1]}</a></p>}</div>
+    </details>
+  ))}
+</div>

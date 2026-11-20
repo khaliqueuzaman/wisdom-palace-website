@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import Cta from '../../components/Cta.astro';
+import { SERIES, BRANDS, type Brand } from '../../data/catalog';
+import { href, SITE } from '../../lib/site';
+const list = [...SERIES].sort((a, b) => b.year - a.year);
+const families = [...new Set(SERIES.map((s) => s.family))];
+---
+<Base title={`Wholesale Catalogue: Apple, Samsung, Xiaomi Phones and Watches | ${SITE.company}`} description="Browse the wholesale catalogue of Apple, Samsung and Xiaomi phones and watches. Filter by brand, product type and family, then request pricing." current="products">
+  <Crumbs items={[['/products/', 'Products']]} />
+  <div class="container page-head">
+    <h1>Wholesale catalogue.</h1>
+    <p class="lead">{SERIES.length} product series across Apple, Samsung and Xiaomi. Filter, then request pricing for any mix.</p>
+  </div>
+  <div class="container catalog">
+    <button class="btn btn-secondary filter-toggle" type="button" aria-expanded="false" aria-controls="filters">Filters</button>
+    <form class="filters" id="filters" role="search" aria-label="Filter products" onsubmit="return false">
+      <div><label class="field-label" for="q">Search</label><div class="search"><Icon name="search" /><input class="input" id="q" type="search" placeholder="e.g. Fold, 17, Ultra" autocomplete="off" /></div></div>
+      <fieldset><legend>Brand</legend><div class="opt-list">
+        {(['apple', 'samsung', 'xiaomi'] as Brand[]).map((b) => <label class="opt"><input type="checkbox" name="brand" value={b} />{BRANDS[b].name}</label>)}
+      </div></fieldset>
+      <fieldset><legend>Type</legend><div class="opt-list">
+        <label class="opt"><input type="checkbox" name="kind" value="phone" />Phones</label>
+        <label class="opt"><input type="checkbox" name="kind" value="watch" />Watches</label>
+      </div></fieldset>
+      <fieldset><legend>Family</legend><div class="opt-list">
+        {families.map((f) => <label class="opt"><input type="checkbox" name="family" value={f} />{f}</label>)}
+      </div></fieldset>
+      <button class="btn btn-secondary btn-s" type="reset">Clear filters</button>
+    </form>
+    <div>
+      <div class="results-bar" aria-live="polite"><span id="count">{list.length} series</span><span>Prices on request</span></div>
+      <div class="grid-cards" id="results">
+        {list.map((s, i) => <ProductCard s={s} eager={i < 3} />)}
+        <div class="empty" id="empty" hidden><h2 class="h4" style="font-size:var(--text-h4)">No models match these filters.</h2><p>Try a broader search, or clear the filters.</p><button class="btn btn-secondary" type="button" id="clear2">Clear filters</button></div>
+      </div>
+    </div>
+  </div>
+  <Cta title="Can’t see the exact model?" text="Tell us the model, storage and colour you need and we check supplier stock for you." />
+</Base>
+<script>
+  const form = document.getElementById('filters') as HTMLFormElement;
+  const cards = [...document.querySelectorAll<HTMLElement>('#results .pcard')];
+  const count = document.getElementById('count')!, empty = document.getElementById('empty')!;
+  const vals = (n: string) => [...form.querySelectorAll<HTMLInputElement>(`input[name="${n}"]:checked`)].map((i) => i.value);
+  function run() {
+    const q = (form.querySelector<HTMLInputElement>('#q')!.value || '').trim().toLowerCase();
+    const b = vals('brand'), k = vals('kind'), f = vals('family');
+    let n = 0;
+    cards.forEach((c) => {
+      const ok = (!b.length || b.includes(c.dataset.brand!)) && (!k.length || k.includes(c.dataset.kind!)) && (!f.length || f.includes(c.dataset.family!)) && (!q || c.dataset.search!.includes(q));
+      c.hidden = !ok; if (ok) n++;
+    });
+    count.textContent = `${n} of ${cards.length} series`; empty.hidden = n > 0;
+  }
+  const params = new URLSearchParams(location.search);
+  params.getAll('brand').forEach((v) => { const i = form.querySelector<HTMLInputElement>(`input[name="brand"][value="${v}"]`); if (i) i.checked = true; });
+  form.addEventListener('input', run); form.addEventListener('change', run);
+  form.addEventListener('reset', () => setTimeout(run));
+  document.getElementById('clear2')!.addEventListener('click', () => form.reset());
+  const tog = document.querySelector<HTMLButtonElement>('.filter-toggle')!;
+  tog.addEventListener('click', () => { const o = form.classList.toggle('open'); tog.setAttribute('aria-expanded', String(o)); });
+  run();
+</script>

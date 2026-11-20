@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from './Crumbs.astro';
+interface Props { title: string; path: string; h1: string; lead?: string; description: string; sections: [string, string][] }
+const { title, path, h1, lead, description, sections } = Astro.props;
+const id = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+<Base title={title} description={description} current="legal">
+  <Crumbs items={[[path, h1]]} />
+  <div class="container page-head"><h1>{h1}</h1>{lead && <p class="lead">{lead}</p>}</div>
+  <div class="container legal-grid">
+    <nav class="toc" aria-label="On this page"><strong>On this page</strong><ol>{sections.map(([t]) => <li><a href={'#' + id(t)}>{t}</a></li>)}</ol></nav>
+    <div class="prose">{sections.map(([t, html]) => <><h2 id={id(t)}>{t}</h2><Fragment set:html={html} /></>)}</div>
+  </div>
+</Base>

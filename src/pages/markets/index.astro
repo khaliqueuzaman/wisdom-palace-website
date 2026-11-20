@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import RouteMap from '../../components/RouteMap.astro';
+import Cta from '../../components/Cta.astro';
+import { MARKETS } from '../../data/content';
+import { href, SITE } from '../../lib/site';
+---
+<Base title={`Markets: Europe, UK, Saudi Arabia and Qatar | ${SITE.company} Mobile Wholesale`} description="Wisdom Palace supplies trade buyers in Europe, the United Kingdom, Saudi Arabia and Qatar from Deira, Dubai." current="markets">
+  <Crumbs items={[['/markets/', 'Markets']]} />
+  <div class="container page-head">
+    <h1>Four markets, one trade desk.</h1>
+    <p class="lead">We quote trade buyers in Europe, the United Kingdom, Saudi Arabia and Qatar from our office in Deira.</p>
+  </div>
+  <section class="section-s"><div class="container"><RouteMap /></div></section>
+  <section class="section-s" aria-label="Markets">
+    <div class="container mkt-cards">
+      {MARKETS.map((m) => (
+        <a class="mkt-card" href={href(`/markets/${m.slug}/`)}>
+          <h2 style="font-size:var(--text-h3)">{m.name}</h2>
+          <p class="muted">{m.buyers}</p>
+          <dl><dt>From Deira</dt><dd class="num">{m.km.toLocaleString('en-GB')} km to {m.ref}</dd><dt>Time</dt><dd>{m.tz}</dd></dl>
+        </a>
+      ))}
+    </div>
+  </section>
+  <Cta title="Buying for another country?" text="Tell us the destination. We confirm coverage before we quote." />
+</Base>

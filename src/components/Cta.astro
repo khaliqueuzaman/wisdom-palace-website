@@ -1,0 +1,14 @@
+---
+import { href, waLink } from '../lib/site';
+import Icon from './Icon.astro';
+interface Props { title?: string; text?: string; model?: string }
+const { title = 'Tell us the models and quantities you need.', text = 'One enquiry covers any mix of phones and watches. The sales team replies with current availability and a written quotation.', model } = Astro.props;
+---
+<section class="section-s"><div class="container"><div class="cta reveal">
+  <h2>{title}</h2>
+  <p>{text}</p>
+  <div class="actions">
+    <a class="btn btn-primary" href={href('/contact/') + (model ? '?model=' + model : '')}>Request a wholesale quote</a>
+    <a class="btn btn-wa" href={waLink()} target="_blank" rel="noopener"><Icon name="wa" />WhatsApp enquiry</a>
+  </div>
+</div></div></section>

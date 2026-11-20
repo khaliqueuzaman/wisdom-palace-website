@@ -1,0 +1,112 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Crumbs from '../../../components/Crumbs.astro';
+import Pic from '../../../components/Pic.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import Faq from '../../../components/Faq.astro';
+import Cta from '../../../components/Cta.astro';
+import Icon from '../../../components/Icon.astro';
+import Swatches from '../../../components/Swatches.astro';
+import OrderBuilder from '../../../components/OrderBuilder.astro';
+import Specs from '../../../components/Specs.astro';
+import { SERIES, BRANDS, url, union, type Series } from '../../../data/catalog';
+import { FAQ } from '../../../data/content';
+import { href, waLink, SITE } from '../../../lib/site';
+import IMAGES from '../../../data/images.json';
+export function getStaticPaths() { return SERIES.map((s) => ({ params: { brand: s.brand, slug: s.slug }, props: { s } })); }
+const { s } = Astro.props as { s: Series };
+const B = BRANDS[s.brand];
+const isWatch = s.kind === 'watch';
+const names = IMAGES as Record<string, { name: string }>;
+const related = SERIES.filter((x) => x.slug !== s.slug && x.brand === s.brand && x.kind === s.kind).sort((a, b) => Math.abs(a.year - s.year) - Math.abs(b.year - s.year)).slice(0, 3);
+const colours = union(s, 'colors');
+const rows: [string, string][] = [
+  ['Model', s.variants.map((v) => v.name).join(', ')],
+  ['Available variants', 'All variants available. Please enquire.'],
+  isWatch ? ['Case sizes', union(s, 'sizes').join(', ') || 'Confirm on enquiry'] : ['Storage capacity', union(s, 'storage').join(', ') || 'Confirm on enquiry'],
+  ...(isWatch && union(s, 'connectivity').length ? [['Connectivity', union(s, 'connectivity').join(', ')] as [string, string]] : []),
+  ['Colour options', colours.length ? `${colours.length} colours` : 'Confirm on enquiry'],
+  ['Regional specification', 'Stated per quotation line. Choose it in your enquiry.'],
+  ['Wholesale availability', 'Contact us for current availability'],
+  ['Warranty', 'As per our terms and conditions']
+];
+const faq = FAQ.filter((f) => /new|warranty|availability|pricing|bulk/i.test(f.q)).slice(0, 5);
+const ld = { '@context': 'https://schema.org', '@type': 'ProductGroup', name: s.name, brand: { '@type': 'Brand', name: B.name }, description: s.desc, hasVariant: s.variants.map((v) => ({ '@type': 'Product', name: v.name, brand: { '@type': 'Brand', name: B.name } })) };
+---
+<Base title={`${s.name} Wholesale | ${SITE.company}, Dubai`} description={`Wholesale ${s.name} from Dubai: ${s.variants.map((v) => v.name).join(', ')}. ${s.desc} Request current availability and pricing.`} current={s.brand} jsonld={ld}>
+  <Crumbs items={[['/products/', 'Products'], [`/products/${s.brand}/`, B.name], [url(s), s.short]]} />
+  <section class="container pd-hero">
+    <p class="kicker"><a href={href(`/products/${s.brand}/` + (isWatch ? '#watches' : '#phones'))}>{isWatch ? B.watches : B.phones}</a> <span class="num">{s.year}</span></p>
+    <h1>{s.name}</h1>
+    <p class="lead">{s.desc}</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#order">Build your order</a>
+      <a class="btn btn-wa" href={waLink(`Hello ${SITE.company}, I would like a wholesale quote for the ${s.name}.`)} target="_blank" rel="noopener"><Icon name="wa" />WhatsApp enquiry</a>
+    </div>
+    <div class="gallery">
+      <div class="gallery-main" data-gallery>
+        {s.images.length ? s.images.map((_, i) => <div class="gslide" hidden={i > 0}><Pic s={s} i={i} eager={i === 0} /></div>) : <Pic s={s} />}
+      </div>
+      {s.images.length > 1 && (
+        <div class="thumbs" role="group" aria-label="Product images">
+          {s.images.map((k, i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} aria-label={`Show ${names[k].name}`} data-i={i}><Pic s={s} i={i} /></button>)}
+        </div>
+      )}
+      <p class="gallery-cap">{s.images.length ? 'Official manufacturer product images.' : 'Official product image to follow.'}</p>
+    </div>
+  </section>
+
+  <OrderBuilder s={s} />
+
+  <section class="section-s" aria-labelledby="cfg-h">
+    <div class="container">
+      <div class="head-l"><div><h2 id="cfg-h">Models in this series.</h2><p class="lead">The manufacturer’s {isWatch ? 'sizes' : 'storage'} and colours for each model.</p></div></div>
+      <div class="configs">
+        {s.variants.map((v) => (
+          <article class="config">
+            <h3>{v.name}</h3>
+            <dl>
+              {v.storage && <div><dt>Storage</dt><dd><ul class="chips">{v.storage.map((x) => <li>{x}</li>)}</ul></dd></div>}
+              {v.sizes && <div><dt>Case sizes</dt><dd><ul class="chips">{v.sizes.map((x) => <li>{x}</li>)}</ul></dd></div>}
+              {v.connectivity && <div><dt>Connectivity</dt><dd><ul class="chips">{v.connectivity.map((x) => <li>{x}</li>)}</ul></dd></div>}
+              <div><dt>Colours ({v.colors.length})</dt><dd><Swatches colors={v.colors} /></dd></div>
+            </dl>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Specs s={s} />
+
+  <section class="section-s band-2" aria-labelledby="ws-h">
+    <div class="container">
+      <div class="head-l"><div><h2 id="ws-h">Wholesale details.</h2><p class="lead">Every quotation lists model, storage, colour and regional specification line by line.</p></div></div>
+      <div class="sheet-table"><table>
+        <caption class="visually-hidden">Wholesale details for the {s.name}</caption>
+        <tbody>{rows.map(([k, v]) => <tr><th scope="row">{k}</th><td>{k === 'Warranty' ? <a class="link" href={href('/terms-of-business/')}>{v}</a> : k === 'Colour options' && colours.length ? <Swatches colors={colours} /> : v}</td></tr>)}</tbody>
+      </table></div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section-s" aria-labelledby="rel-h">
+      <div class="container"><div class="head-l"><h2 id="rel-h">Related {isWatch ? 'watches' : 'phones'}</h2><a class="link" href={href(`/products/${s.brand}/`)}>All {B.name}</a></div>
+        <div class="grid-cards">{related.map((r) => <ProductCard s={r} />)}</div></div>
+    </section>
+  )}
+
+  <section class="section-s" aria-labelledby="pf-h">
+    <div class="container"><div class="split"><h2 id="pf-h">Questions buyers ask.</h2><Faq items={faq} /></div></div>
+  </section>
+  <Cta model={s.slug} />
+</Base>
+<script>
+  const g = document.querySelector('[data-gallery]');
+  const slides = g ? [...g.querySelectorAll<HTMLElement>('.gslide')] : [];
+  document.querySelectorAll<HTMLButtonElement>('.thumbs button').forEach((b, _, all) => b.addEventListener('click', () => {
+    const i = Number(b.dataset.i);
+    slides.forEach((sl, j) => (sl.hidden = j !== i));
+    all.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+</script>

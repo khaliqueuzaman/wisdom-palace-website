@@ -1,0 +1,206 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from '../components/Crumbs.astro';
+import Icon from '../components/Icon.astro';
+import { SERIES, BRANDS, type Brand } from '../data/catalog';
+import { REGIONS, COUNTRIES } from '../data/content';
+import { href, waLink, SITE } from '../lib/site';
+const preview = process.env.PREVIEW === '1';
+const groups = (['apple', 'samsung', 'xiaomi'] as Brand[]).map((b) => ({ b, phones: SERIES.filter((s) => s.brand === b && s.kind === 'phone'), watches: SERIES.filter((s) => s.brand === b && s.kind === 'watch') }));
+const ld = { '@context': 'https://schema.org', '@type': 'LocalBusiness', name: SITE.company, telephone: SITE.whatsapp, foundingDate: SITE.founded, hasMap: SITE.maps,
+  address: { '@type': 'PostalAddress', streetAddress: 'Office M07, Al Makhtom Building, Naif Road, Naif', addressLocality: 'Deira, Dubai', addressCountry: 'AE' },
+  openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '10:00', closes: '22:00' }] };
+---
+<Base title={`Contact and Wholesale Enquiry | ${SITE.company}, Deira, Dubai`} description="Request a wholesale quotation for Apple, Samsung and Xiaomi phones and watches, or visit Wisdom Palace at Al Makhtom Building, Naif Road, Deira." current="contact" jsonld={ld}>
+  <Crumbs items={[['/contact/', 'Contact']]} />
+  <div class="container page-head">
+    <h1>Request a wholesale quote.</h1>
+    <p class="lead">List the models you need. The sales team replies with availability and a written quotation.</p>
+  </div>
+  <div class="container contact-grid">
+    <div class="form-card" id="enquiry">
+      <div id="done" class="form-done" hidden tabindex="-1">
+        <h2 style="font-size:var(--text-h3)">Enquiry received.</h2>
+        <p id="done-text">The sales team will reply within working hours, {SITE.hours}, Dubai time.</p>
+        <p><a class="btn btn-wa" href={waLink()} target="_blank" rel="noopener"><Icon name="wa" />Continue on WhatsApp</a></p>
+      </div>
+      <form id="enq" novalidate data-demo={preview ? '1' : '0'} action="/api/enquiry.php" method="post">
+        <div class="form-summary" id="summary" hidden tabindex="-1" role="alert"><strong>Please check these fields:</strong><ul></ul></div>
+        <h2 class="fstep"><span class="bnum">1</span>Your order</h2>
+        <div class="qblock" id="qblock" hidden>
+          <ul class="qlines" id="c-lines"></ul>
+          <p class="qblock-foot"><span id="c-total"></span><a class="link" href={href('/products/')}>Add more products</a></p>
+        </div>
+        <div id="fallback">
+          <p class="hint qhint">Tip: open any product and use <b>Build your order</b> to add exact models, storage, colours and quantities. Or tick models here.</p>
+          <div class="form-grid">
+            <fieldset class="field full"><legend>Brand</legend>
+              <div class="seg">{[['all', 'All brands'], ['apple', 'Apple'], ['samsung', 'Samsung'], ['xiaomi', 'Xiaomi']].map(([v, l], i) => <><input type="radio" name="brand" id={'b-' + v} value={v} checked={i === 0} /><label for={'b-' + v}>{l}</label></>)}</div>
+            </fieldset>
+            <fieldset class="field full"><legend>Models <span class="req">*</span></legend>
+              <div class="picker" id="picker" aria-describedby="e-models">
+                {groups.map((g) => <div data-brand={g.b}>
+                  <span class="pg">{BRANDS[g.b].phones}</span>{g.phones.map((s) => <label class="check"><input type="checkbox" name="models" value={s.name} data-slug={s.slug} />{s.name}</label>)}
+                  <span class="pg">{BRANDS[g.b].watches}</span>{g.watches.map((s) => <label class="check"><input type="checkbox" name="models" value={s.name} data-slug={s.slug} />{s.name}</label>)}
+                </div>)}
+              </div>
+              <div class="picked" id="picked" aria-live="polite"></div>
+              <p class="err" id="e-models"></p>
+            </fieldset>
+            <div class="field"><label for="f-region">Regional specification <span class="req">*</span></label>
+              <select class="input" id="f-region" name="region"><option value="">Select a specification</option>{REGIONS.map((r) => <option>{r}</option>)}</select><p class="err" id="e-region"></p></div>
+            <div class="field"><label for="f-qty">Total quantity <span class="req">*</span></label><input class="input" id="f-qty" name="quantity" inputmode="numeric" maxlength="12" placeholder="e.g. 200" /><p class="err" id="e-qty"></p></div>
+          </div>
+        </div>
+
+        <h2 class="fstep"><span class="bnum">2</span>Delivery</h2>
+        <div class="form-grid">
+          <div class="field"><label for="f-country">Delivery country <span class="req">*</span></label>
+            <select class="input" id="f-country" name="country" required><option value="">Select a country</option>{Object.entries(COUNTRIES).map(([g, cs]) => <optgroup label={g}>{cs.map((c) => <option>{c}</option>)}</optgroup>)}<option>Other</option></select><p class="err" id="e-country"></p></div>
+          <div class="field"><label for="f-city">Delivery city or port <span class="req">*</span></label><input class="input" id="f-city" name="city" autocomplete="address-level2" maxlength="80" placeholder="e.g. Frankfurt, Jeddah port" /><p class="err" id="e-city"></p></div>
+          <div class="field"><label for="f-currency">Quotation currency <span class="opt-note">(optional)</span></label><select class="input" id="f-currency" name="currency"><option value="">No preference</option><option>USD</option><option>AED</option><option>EUR</option><option>GBP</option><option>SAR</option><option>QAR</option></select></div>
+        </div>
+
+        <h2 class="fstep"><span class="bnum">3</span>Your details</h2>
+        <div class="form-grid">
+          <div class="field"><label for="f-name">Full name <span class="req">*</span></label><input class="input" id="f-name" name="name" autocomplete="name" required maxlength="120" /><p class="err" id="e-name"></p></div>
+          <div class="field"><label for="f-company">Company <span class="req">*</span></label><input class="input" id="f-company" name="company" autocomplete="organization" required maxlength="160" /><p class="err" id="e-company"></p></div>
+          <div class="field"><label for="f-email">Business email <span class="req">*</span></label><input class="input" id="f-email" name="email" type="email" autocomplete="email" required maxlength="160" /><p class="err" id="e-email"></p></div>
+          <div class="field"><label for="f-phone">WhatsApp number <span class="req">*</span></label><input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="+44 7700 900000" /><p class="err" id="e-phone"></p></div>
+          <div class="field full"><label for="f-msg">Notes <span class="opt-note">(optional)</span></label><textarea class="input" id="f-msg" name="message" rows="4" maxlength="3000" placeholder="Anything else the sales team should know"></textarea></div>
+          <div class="hp" aria-hidden="true"><label for="f-web">Website</label><input id="f-web" name="website" tabindex="-1" autocomplete="off" /></div>
+          <div class="field full"><label class="check"><input type="checkbox" id="f-consent" name="consent" required /><span>I agree that {SITE.company} may use these details to reply to this enquiry, as described in the <a class="link" href={href('/privacy-policy/')}>privacy policy</a>. <span class="req">*</span></span></label><p class="err" id="e-consent"></p></div>
+        </div>
+        <div class="form-foot" style="margin-top:var(--space-xl)">
+          <p class="hint">{preview ? 'Preview: demonstration mode. Nothing is sent or stored.' : 'Sent securely to the sales team. Nothing appears in the page address.'}</p>
+          <div class="actions"><button class="btn btn-wa" type="button" id="wa-send"><Icon name="wa" />Send list on WhatsApp</button><button class="btn btn-primary" type="submit" id="submit">Send to sales team</button></div>
+        </div>
+      </form>
+    </div>
+    <aside class="stack-l">
+      <ul class="contact-list">
+        <li><span class="ic"><Icon name="wa" /></span><div><b>WhatsApp and phone</b><a class="link" href={waLink()} target="_blank" rel="noopener">{SITE.whatsapp}</a></div></li>
+        <li><span class="ic"><Icon name="pin" /></span><div><b>Office</b>{SITE.addressLines.map((l) => <>{l}<br /></>)}</div></li>
+        <li><span class="ic"><Icon name="clock" /></span><div><b>Hours</b>{SITE.hours}</div></li>
+        {SITE.email ? <li><span class="ic"><Icon name="mail" /></span><div><b>Email</b><a class="link" href={'mailto:' + SITE.email}>{SITE.email}</a></div></li> : null}
+      </ul>
+      <div class="map" id="map">
+        <div class="map-grid"></div>
+        <div class="map-panel"><span>Al Makhtom Building, Naif Road</span><button class="btn btn-secondary btn-s" type="button" id="load-map">Show map</button></div>
+      </div>
+      <a class="link" href={SITE.maps} target="_blank" rel="noopener">Get directions in Google Maps</a>
+    </aside>
+  </div>
+</Base>
+<script>
+  import { getQuote, setQty, removeLine, units, lineText, clearQuote } from '../lib/quote';
+  import { SITE } from '../lib/site';
+  const form = document.getElementById('enq') as HTMLFormElement;
+  const demo = form.dataset.demo === '1';
+  const $ = (id: string) => document.getElementById(id)!;
+  const picker = $('picker'), picked = $('picked');
+  // Preselect a model from ?model=slug (the slug only; personal data never goes in the URL).
+  const pre = new URLSearchParams(location.search).get('model');
+  if (pre) { const c = picker.querySelector<HTMLInputElement>(`input[data-slug="${CSS.escape(pre)}"]`); if (c) c.checked = true; }
+  function showPicked() {
+    const v = [...picker.querySelectorAll<HTMLInputElement>('input:checked')].map((i) => i.value);
+    picked.replaceChildren(...v.map((t) => Object.assign(document.createElement('span'), { textContent: t })));
+  }
+  form.querySelectorAll<HTMLInputElement>('input[name="brand"]').forEach((r) => r.addEventListener('change', () => {
+    picker.querySelectorAll<HTMLElement>('[data-brand]').forEach((g) => (g.hidden = r.value !== 'all' && g.dataset.brand !== r.value));
+  }));
+  picker.addEventListener('change', () => { showPicked(); $('e-models').textContent = ''; picker.removeAttribute('aria-invalid'); });
+  showPicked();
+  // Quote list from product pages
+  const qblock = $('qblock'), fallback = $('fallback'), cl = $('c-lines');
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  function paintLines() {
+    const lines = getQuote();
+    qblock.hidden = lines.length === 0; fallback.hidden = lines.length > 0;
+    cl.innerHTML = lines.map((l) => `<li data-id="${l.id}"><div class="ql-main"><b>${esc(l.model)}</b><span>${esc([l.storage, l.colour, l.region].filter(Boolean).join(' · '))}</span></div><div class="ql-ctl"><label class="visually-hidden" for="cq-${l.id}">Quantity for ${esc(lineText(l))}</label><input class="input ql-qty" id="cq-${l.id}" inputmode="numeric" value="${l.qty}"><button type="button" class="linkbtn ql-rm" aria-label="Remove ${esc(l.model)}">Remove</button></div></li>`).join('');
+    $('c-total').textContent = `${lines.length} line${lines.length === 1 ? '' : 's'}, ${units(lines)} units`;
+  }
+  cl.addEventListener('change', (e) => { const i = e.target as HTMLInputElement; if (i.classList.contains('ql-qty')) setQty(i.closest('li')!.dataset.id!, parseInt(i.value, 10)); });
+  cl.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('.ql-rm'); if (b) removeLine(b.closest('li')!.dataset.id!); });
+  window.addEventListener('quote:change', paintLines);
+  paintLines();
+
+  const always: [string, string, (el: any) => boolean, string][] = [
+    ['f-country', 'e-country', (e) => !!e.value, 'Select the delivery country.'],
+    ['f-city', 'e-city', (e) => e.value.trim().length > 1, 'Enter the delivery city or port.'],
+    ['f-name', 'e-name', (e) => e.value.trim().length > 1, 'Enter your full name.'],
+    ['f-company', 'e-company', (e) => e.value.trim().length > 1, 'Enter your company name.'],
+    ['f-email', 'e-email', (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.value.trim()), 'Enter a valid email, like name@company.com.'],
+    ['f-phone', 'e-phone', (e) => e.value.replace(/\D/g, '').length >= 7, 'Enter a WhatsApp number with country code.'],
+    ['f-consent', 'e-consent', (e) => e.checked, 'Tick the box so we can reply to you.']
+  ];
+  const withoutList: [string, string, (el: any) => boolean, string][] = [
+    ['f-region', 'e-region', (e) => !!e.value, 'Select the regional specification.'],
+    ['f-qty', 'e-qty', (e) => /^\d{1,7}$/.test(e.value.trim()) && +e.value > 0, 'Enter the total quantity as a number.']
+  ];
+  [...always, ...withoutList].forEach(([id, eid]) => $(id).addEventListener('input', () => { $(eid).textContent = ''; $(id).removeAttribute('aria-invalid'); }));
+  const sum = $('summary');
+  function showErrors(bad: [string, string][]) {
+    sum.querySelector('ul')!.replaceChildren(...bad.map(([id, m]) => { const li = document.createElement('li'); const a = Object.assign(document.createElement('a'), { href: '#' + id, textContent: m }); li.append(a); return li; }));
+    sum.hidden = false; sum.focus();
+  }
+  function check(rules: typeof always) {
+    const bad: [string, string][] = [];
+    rules.forEach(([id, eid, ok, msg]) => { const el = $(id); const good = ok(el); $(eid).textContent = good ? '' : msg; el.toggleAttribute('aria-invalid', !good); if (!good) bad.push([id, msg]); });
+    return bad;
+  }
+  function orderBad(): [string, string][] {
+    if (getQuote().length) return [];
+    const bad = check(withoutList);
+    if (!picker.querySelector('input:checked')) { $('e-models').textContent = 'Add products from a product page, or tick at least one model.'; picker.setAttribute('aria-invalid', 'true'); bad.unshift(['picker', 'Add at least one product.']); }
+    return bad;
+  }
+  // WhatsApp: order lines and delivery only; personal details are not put in the link.
+  $('wa-send').addEventListener('click', () => {
+    const bad = [...orderBad(), ...check(always.slice(0, 2))];
+    if (bad.length) { showErrors(bad); return; }
+    sum.hidden = true;
+    const lines = getQuote();
+    const order = lines.length
+      ? lines.map((l, i) => `${i + 1}. ${lineText(l)} x ${l.qty}`).join('\n')
+      : `Models: ${[...picker.querySelectorAll<HTMLInputElement>('input:checked')].map((x) => x.value).join(', ')}\nSpec: ${(($('f-region') as HTMLSelectElement).value)}\nTotal quantity: ${($('f-qty') as HTMLInputElement).value}`;
+    const text = `Hello ${SITE.company}, I would like a wholesale quotation:\n\n${order}\n\nDelivery: ${($('f-city') as HTMLInputElement).value.trim()}, ${($('f-country') as HTMLSelectElement).value}` + ((($('f-currency') as HTMLSelectElement).value) ? `\nCurrency: ${($('f-currency') as HTMLSelectElement).value}` : '');
+    window.open(`https://wa.me/${SITE.whatsappDigits}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    (window as any).wpTrack?.('enquiry_whatsapp', { lines: lines.length });
+  });
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const bad = [...orderBad(), ...check(always)];
+    if (bad.length) { showErrors(bad); return; }
+    sum.hidden = true;
+    const btn = $('submit') as HTMLButtonElement; btn.disabled = true; btn.textContent = 'Sending…';
+    const fd = new FormData(form);
+    const data: Record<string, unknown> = Object.fromEntries(fd.entries());
+    const lines = getQuote();
+    data.lines = lines.map(({ model, storage, colour, region, qty }) => ({ model, storage, colour, region, qty }));
+    data.models = lines.length ? [] : fd.getAll('models');
+    if (lines.length) data.quantity = String(units(lines));
+    try {
+      if (demo) { await new Promise((r) => setTimeout(r, 600)); }
+      else {
+        const res = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        if (!res.ok) throw new Error(String(res.status));
+      }
+      (window as any).wpTrack?.('enquiry_submit', { lines: lines.length, demo });
+      if (!demo) clearQuote();
+      form.hidden = true; const d = $('done'); d.hidden = false;
+      if (demo) $('done-text').textContent = 'Demonstration mode: nothing was sent or stored. On the live site this goes to the sales team.';
+      d.focus();
+    } catch {
+      btn.disabled = false; btn.textContent = 'Send to sales team';
+      sum.querySelector('ul')!.replaceChildren(Object.assign(document.createElement('li'), { textContent: 'The enquiry could not be sent. Please try again, or message us on WhatsApp.' }));
+      sum.hidden = false; sum.focus();
+    }
+  });
+  $('load-map').addEventListener('click', () => {
+    const f = document.createElement('iframe');
+    f.src = 'https://www.google.com/maps?q=' + encodeURIComponent('Al Makhtom Building, Naif Road, Deira, Dubai') + '&output=embed';
+    f.title = 'Map of Al Makhtom Building, Naif Road, Deira'; f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade';
+    $('map').replaceChildren(f);
+  });
+</script>

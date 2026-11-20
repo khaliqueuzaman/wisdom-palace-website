@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Crumbs from '../components/Crumbs.astro';
+import Cta from '../components/Cta.astro';
+import { href, SITE } from '../lib/site';
+const steps = [
+  { t: 'Send your enquiry', d: 'Use the form or WhatsApp.', l: ['Models and storage per line', 'Colours and quantities', 'Regional specification', 'Destination country'] },
+  { t: 'Receive a written quotation', d: 'The sales team checks current stock and replies with a line-by-line quotation.', l: ['Model, storage and colour', 'Regional specification', 'Unit price and quantity', 'Validity of the quotation'] },
+  { t: 'Confirm and ship', d: 'Once you confirm, we agree payment and delivery terms and prepare the consignment.', l: ['Payment terms agreed per order', 'Delivery or forwarder handover', 'Documents for your importer'] }
+];
+---
+<Base title={`Wholesale Process: How to Order | ${SITE.company}`} description="How to buy wholesale mobile phones and watches from Wisdom Palace in Dubai: enquiry, written quotation, confirmation and shipment." current="wholesale">
+  <Crumbs items={[['/wholesale-process/', 'Wholesale process']]} />
+  <div class="container page-head">
+    <h1>From enquiry to shipment.</h1>
+    <p class="lead">Three steps. Prices and availability are confirmed in writing for every order.</p>
+  </div>
+  <section class="section-s"><div class="container">
+    <ol class="steps">{steps.map((s) => <li><h2 class="h3" style="font-size:var(--text-h4)">{s.t}</h2><p>{s.d}</p><ul>{s.l.map((x) => <li>{x}</li>)}</ul></li>)}</ol>
+  </div></section>
+  <section class="section-s band-2"><div class="container split">
+    <h2>What we do not publish.</h2>
+    <div class="prose"><p>Prices, stock counts and lead times change daily, so they are never shown on the website. Each quotation states them for your exact lines.</p><p>Read about <a class="link" href={href('/quality-and-condition/')}>product condition and regional specification</a>, or the <a class="link" href={href('/terms-of-business/')}>terms of business</a>.</p></div>
+  </div></section>
+  <Cta />
+</Base>

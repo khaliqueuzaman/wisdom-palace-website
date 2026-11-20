@@ -1,0 +1,11 @@
+---
+import { BRANDS, type Series } from '../data/catalog';
+import IMAGES from '../data/images.json';
+interface Props { s: Series; i?: number; eager?: boolean; cls?: string }
+const { s, i = 0, eager = false, cls } = Astro.props;
+const key = s.images[i];
+const m = (IMAGES as Record<string, { w: number; h: number; name: string }>)[key];
+---
+{m
+  ? <img class={cls} src={`/images/products/${key}.webp`} width={m.w} height={m.h} alt={`${m.name.startsWith(BRANDS[s.brand].name) ? '' : BRANDS[s.brand].name + ' '}${m.name}, official product image`} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : undefined} />
+  : <span class="nopic" role="img" aria-label={`${s.name}, product image to follow`}><span>{BRANDS[s.brand].name}</span><b>{s.short}</b></span>}

@@ -1,0 +1,11 @@
+---
+import Legal from '../components/Legal.astro';
+import { SITE } from '../lib/site';
+const s: [string, string][] = [
+  ['What we store', '<p>One entry in your browser’s local storage, <code>wp-consent</code>, remembers your cookie choice.</p>'],
+  ['Analytics', '<p>Analytics load only if you choose “Allow analytics”. No analytics run before that.</p>'],
+  ['Maps', '<p>The Google map on the contact page loads only when you press “Show map”. Google may then set its own cookies.</p>'],
+  ['Changing your choice', '<p>Clear this site’s data in your browser and the banner appears again.</p>']
+];
+---
+<Legal title={`Cookie Policy | ${SITE.company}`} path="/cookie-policy/" h1="Cookie policy" lead="What this website stores in your browser." description="Which cookies and local storage the Wisdom Palace website uses." sections={s} />

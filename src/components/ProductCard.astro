@@ -1,0 +1,24 @@
+---
+import { BRANDS, url, type Series } from '../data/catalog';
+import { href } from '../lib/site';
+import Icon from './Icon.astro';
+import Pic from './Pic.astro';
+import Swatches from './Swatches.astro';
+import { union } from '../data/catalog';
+interface Props { s: Series; eager?: boolean }
+const { s, eager } = Astro.props;
+const models = s.variants.map((v) => v.name).join(', ');
+---
+<article class="pcard" data-brand={s.brand} data-kind={s.kind} data-family={s.family} data-search={`${s.name} ${models} ${s.family} ${BRANDS[s.brand].name}`.toLowerCase()}>
+  <div class="pcard-pic"><Pic s={s} eager={eager} /></div>
+  <div class="pcard-body">
+    <span class="pcard-meta">{s.family.startsWith(BRANDS[s.brand].name) ? '' : BRANDS[s.brand].name + ' '}{s.family}, {s.year}</span>
+    <h3><a href={href(url(s))}>{s.name}</a></h3>
+    <p class="pcard-models">{models}</p>
+    <Swatches colors={union(s, 'colors')} compact max={7} />
+    <div class="pcard-foot">
+      <span class="avail"><Icon name="clock" />Contact for availability</span>
+      <a class="btn btn-secondary btn-s" href={href(url(s)) + '#order'}>Build order</a>
+    </div>
+  </div>
+</article>

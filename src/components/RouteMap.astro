@@ -1,0 +1,21 @@
+---
+const hub = [600, 330];
+const pts = [
+  { n: 'United Kingdom', s: 'London, 5,471 km', c: [90, 110], dy: -18, a: 'start' },
+  { n: 'Europe', s: 'Frankfurt, 4,833 km', c: [230, 190], dy: 28, a: 'middle' },
+  { n: 'Saudi Arabia', s: 'Riyadh, 872 km', c: [430, 360], dy: 30, a: 'middle' },
+  { n: 'Qatar', s: 'Doha, 380 km', c: [520, 250], dy: -18, a: 'middle' }
+];
+const arc = (p: number[]) => { const mx = (p[0] + hub[0]) / 2, my = Math.min(p[1], hub[1]) - 40 - Math.abs(p[0] - hub[0]) * 0.18; return `M${hub[0]} ${hub[1]} Q${mx} ${my} ${p[0]} ${p[1]}`; };
+const id = 'rm-' + Math.random().toString(36).slice(2, 7);
+---
+<figure class="route-map" style="margin:0">
+  <svg viewBox="0 0 700 420" role="img" aria-labelledby={id}>
+    <title id={id}>Distances from Deira, Dubai: Doha 380 km, Riyadh 872 km, Frankfurt 4,833 km, London 5,471 km.</title>
+    {pts.map((p) => <path class="arc" d={arc(p.c)} />)}
+    {pts.map((p) => <g><circle class="city" cx={p.c[0]} cy={p.c[1]} r="4.5" /><text x={p.c[0]} y={p.c[1] + p.dy} text-anchor={p.a}>{p.n}</text><text class="sub" x={p.c[0]} y={p.c[1] + p.dy + 15} text-anchor={p.a}>{p.s}</text></g>)}
+    <circle class="hub-ring" cx={hub[0]} cy={hub[1]} r="8" /><circle class="hub" cx={hub[0]} cy={hub[1]} r="8" />
+    <text x={hub[0]} y={hub[1] + 32} text-anchor="middle">Deira, Dubai</text>
+  </svg>
+  <figcaption class="small muted" style="margin-top:8px">Schematic, not to scale. Great-circle distance from Deira to a reference city; not a shipping route or delivery time.</figcaption>
+</figure>

@@ -1,0 +1,52 @@
+---
+import { href } from '../lib/site';
+---
+<div class="qd-scrim" id="qd-scrim" hidden></div>
+<aside class="qd" id="qd" role="dialog" aria-modal="true" aria-labelledby="qd-h" hidden>
+  <div class="qd-head"><h2 id="qd-h">Quote list</h2><button type="button" class="qd-close" aria-label="Close quote list">×</button></div>
+  <div class="qd-body">
+    <ul class="qlines" data-qlines></ul>
+    <div class="qd-empty" data-qempty><p>Your quote list is empty.</p><p class="hint">Open any product, choose model, storage, colour and quantity, then add it here.</p><a class="btn btn-secondary btn-s" href={href('/products/')}>Browse products</a></div>
+  </div>
+  <div class="qd-foot" data-qfoot>
+    <p class="qd-total"><span data-qcount></span><span data-qunits></span></p>
+    <a class="btn btn-primary" href={href('/contact/') + '#enquiry'}>Continue to enquiry</a>
+    <button type="button" class="linkbtn" data-qclear>Clear list</button>
+  </div>
+</aside>
+
+<script>
+  import { getQuote, setQty, removeLine, clearQuote, units, lineText, type QuoteLine } from '../lib/quote';
+  const qd = document.getElementById('qd')!, scrim = document.getElementById('qd-scrim')!;
+  const list = qd.querySelector<HTMLElement>('[data-qlines]')!;
+  let last: HTMLElement | null = null;
+  const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  function renderLines(target: HTMLElement, lines: QuoteLine[]) {
+    target.innerHTML = lines.map((l) => `<li data-id="${l.id}"><div class="ql-main"><b>${esc(l.model)}</b><span>${esc([l.storage, l.colour, l.region].filter(Boolean).join(' · '))}</span></div><div class="ql-ctl"><label class="visually-hidden" for="q-${l.id}">Quantity for ${esc(lineText(l))}</label><input class="input ql-qty" id="q-${l.id}" inputmode="numeric" value="${l.qty}"><button type="button" class="linkbtn ql-rm" aria-label="Remove ${esc(l.model)}">Remove</button></div></li>`).join('');
+  }
+  function paint() {
+    const lines = getQuote();
+    renderLines(list, lines);
+    qd.querySelector<HTMLElement>('[data-qempty]')!.hidden = lines.length > 0;
+    qd.querySelector<HTMLElement>('[data-qfoot]')!.hidden = lines.length === 0;
+    qd.querySelector('[data-qcount]')!.textContent = `${lines.length} line${lines.length === 1 ? '' : 's'}`;
+    qd.querySelector('[data-qunits]')!.textContent = `${units(lines)} units`;
+    document.querySelectorAll<HTMLElement>('[data-quote-btn]').forEach((b) => { b.hidden = lines.length === 0; const c = b.querySelector('[data-quote-n]'); if (c) c.textContent = String(lines.length); });
+  }
+  function open() { last = document.activeElement as HTMLElement; paint(); qd.hidden = false; scrim.hidden = false; requestAnimationFrame(() => { qd.classList.add('open'); scrim.classList.add('open'); }); document.documentElement.style.overflow = 'hidden'; qd.querySelector<HTMLElement>('.qd-close')!.focus(); }
+  function close() { qd.classList.remove('open'); scrim.classList.remove('open'); document.documentElement.style.overflow = ''; setTimeout(() => { qd.hidden = true; scrim.hidden = true; }, 250); last?.focus(); }
+  window.addEventListener('quote:open', open);
+  window.addEventListener('quote:change', paint);
+  window.addEventListener('storage', (e) => { if (e.key === 'wp-quote') paint(); });
+  document.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('[data-quote-btn]')) open(); });
+  qd.querySelector('.qd-close')!.addEventListener('click', close);
+  scrim.addEventListener('click', close);
+  qd.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+    if (e.key === 'Tab') { const f = [...qd.querySelectorAll<HTMLElement>('a,button,input')].filter((x) => x.offsetParent); if (!f.length) return; const a = f[0], z = f[f.length - 1]; if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } }
+  });
+  list.addEventListener('change', (e) => { const i = e.target as HTMLInputElement; if (i.classList.contains('ql-qty')) setQty(i.closest('li')!.dataset.id!, parseInt(i.value, 10)); });
+  list.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('.ql-rm'); if (b) removeLine(b.closest('li')!.dataset.id!); });
+  qd.querySelector('[data-qclear]')!.addEventListener('click', () => clearQuote());
+  paint();
+</script>
